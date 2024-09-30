@@ -6,9 +6,9 @@ package pdcpart2;
 
 /**
  *
- * @author Onafanewlevel
+ * @author setefanomuller
  */
-public interface GameControl {
-    void startGame();
-    void stopGame();
+public interface TimeControl {
+    public void startTimer();
+    public void stopTimer();   
 }
