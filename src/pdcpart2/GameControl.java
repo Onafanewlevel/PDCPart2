@@ -11,4 +11,6 @@ package pdcpart2;
 public interface GameControl {
     void startGame();
     void stopGame();
+    void startCountdown();
+    void stopCountdown();
 }

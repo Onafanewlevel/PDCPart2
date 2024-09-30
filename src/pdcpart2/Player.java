@@ -12,11 +12,13 @@ public class Player {
     private String name;
     private int score;
     private boolean hasLifeline;
+    private boolean hasGivenAnswer;
     
     public Player(String name){
         this.name = name;
         this.score = 0;
         this.hasLifeline = true;
+        this.hasGivenAnswer = false;
     }
     
     public String getName(){return name;}
@@ -25,4 +27,6 @@ public class Player {
     public void setScore(int score){this.score = score;}
     public boolean hasLifeline(){return hasLifeline;}
     public void sethasLifeline(boolean hasLifeline){this.hasLifeline = hasLifeline;}
+    public boolean hasGivenAnswer(){return hasGivenAnswer;}
+    public void setHasGivenAnswer(boolean hasGivenAnswer){this.hasGivenAnswer = hasGivenAnswer;}
 }

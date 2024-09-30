@@ -8,6 +8,21 @@ package pdcpart2;
  *
  * @author Onafanewlevel
  */
-public class RuntimeException {
-    
+public class RuntimeException extends Throwable {
+
+    private String message;
+
+    public RuntimeException(String message) {
+        this.message = message;
+    }
+
+    public RuntimeException(String message, Throwable cause) {
+        super(cause);  // Pass the cause to the superclass constructor
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }
