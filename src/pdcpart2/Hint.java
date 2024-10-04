@@ -11,5 +11,6 @@ package pdcpart2;
 public class Hint extends Lifeline {
     public void useLifeline() {
         System.out.println("Hint lifeline is used");
+        System.out.println("This is changes to the code");
     }
 }

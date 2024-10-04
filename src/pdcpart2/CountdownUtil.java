@@ -1,7 +1,5 @@
 package pdcpart2;
 
-
-
 public class CountdownUtil implements TimeControl, Runnable {
     private Player player;
     private int seconds;
