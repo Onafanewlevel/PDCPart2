@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package comp603projectpart2;
+package pdcpart2;
 
 /**
  *
@@ -48,7 +48,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl {
         setLocationRelativeTo(null);
 
         // Load questions
-        QuestionFileReader reader = new QuestionFileReader("src/comp603projectpart2/questions.txt");
+        QuestionFileReader reader = new QuestionFileReader("src/pdcpart2/questions.txt");
         questions = reader.getQuestions();
 
         // Score and player display
