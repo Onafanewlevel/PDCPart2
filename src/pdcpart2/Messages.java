@@ -1,4 +1,4 @@
-package comp603projectpart2;
+package pdcpart2;
 
 
 import javax.swing.JOptionPane;
