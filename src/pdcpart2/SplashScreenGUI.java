@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class SplashScreenGUI extends JFrame {
     private JTextField nameField;
@@ -19,31 +21,36 @@ public class SplashScreenGUI extends JFrame {
     private JButton startButton;
 
     public SplashScreenGUI() {
+        // Load custom font
+        Font customFont = loadFont("src/resources/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
+
         // Frame setup
         setTitle("Who Wants to Become a Millionaire");
-        setSize(400, 300);
+        setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Center the window on the screen
         setLocationRelativeTo(null);
 
-        // Title Label
+        // Title Label with custom font
         titleLabel = new JLabel("Who Wants to Become a Millionaire", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        titleLabel.setFont(customFont); // Apply custom font
         add(titleLabel, BorderLayout.NORTH);
 
-        // Name Input Panel
+        // Name Input Panel with custom font
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new FlowLayout());
         JLabel nameLabel = new JLabel("Enter your name: ");
+        nameLabel.setFont(customFont.deriveFont(16f)); // Smaller size for labels
         nameField = new JTextField(15);
         namePanel.add(nameLabel);
         namePanel.add(nameField);
         add(namePanel, BorderLayout.CENTER);
 
-        // Start Button
+        // Start Button with custom font
         startButton = new JButton("Start Game");
+        startButton.setFont(customFont.deriveFont(18f)); // Adjust size for button
         add(startButton, BorderLayout.SOUTH);
 
         // Add action listener for the start button
@@ -64,8 +71,22 @@ public class SplashScreenGUI extends JFrame {
         setVisible(true);
     }
 
+    // Method to load custom font
+    private Font loadFont(String path, float size) {
+        try {
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font); // Register the font with the graphics environment
+            return font;
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+            return new Font("Serif", Font.PLAIN, (int) size); // Fallback to default font
+        }
+    }
+
     public static void main(String[] args) {
         new SplashScreenGUI();
     }
 }
+
 

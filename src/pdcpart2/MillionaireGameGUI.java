@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class MillionaireGameGUI extends JFrame implements GameControl {
@@ -33,60 +35,74 @@ public class MillionaireGameGUI extends JFrame implements GameControl {
     private JButton fiftyFiftyButton;
     private JButton hintButton;
 
+    // Database connection parameters
+    private static final String DATABASE_URL = "jdbc:derby://localhost:1527/QuestionsDB";
+    private static final String USERNAME = "pdc2";
+    private static final String PASSWORD = "pdc2";
+
     public MillionaireGameGUI(String playerName) {
         this.playerName = playerName;
         fiftyFiftyLifeline = new FiftyFifty();
         hintLifeline = new Hint();
 
+        // Load custom font
+        Font customFont = loadFont("src/resources/fonts/MesloLGS NF Regular.ttf", 18f);
+
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
-        setSize(600, 500);
+        setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Center the window on the screen
         setLocationRelativeTo(null);
 
-        // Load questions
-        QuestionFileReader reader = new QuestionFileReader("src/pdcpart2/questions.txt");
+        // Load questions from the database
+        QuestionDatabaseLoader reader = new QuestionDatabaseLoader(DATABASE_URL, USERNAME, PASSWORD);
         questions = reader.getQuestions();
 
-        // Score and player display
+        // Score and player display with custom font
         scoreLabel = new JLabel("Score: $" + score);
+        scoreLabel.setFont(customFont.deriveFont(16f));
         playerLabel = new JLabel("Player: " + playerName);
+        playerLabel.setFont(customFont.deriveFont(16f));
+        
         JPanel infoPanel = new JPanel(new GridLayout(1, 3));
         infoPanel.add(scoreLabel);
         infoPanel.add(playerLabel);
 
-        // Countdown label
+        // Countdown label with custom font
         countdownLabel = new JLabel("Time left: ");
+        countdownLabel.setFont(customFont.deriveFont(16f));
         infoPanel.add(countdownLabel);
         add(infoPanel, BorderLayout.NORTH);
 
         // Message label for feedback and lifeline info
         messageLabel = new JLabel("Messages will appear here");
+        messageLabel.setFont(customFont.deriveFont(14f));
         add(messageLabel, BorderLayout.SOUTH);
 
-        // Question display using JTextArea with JScrollPane
+        // Question display using JTextArea with JScrollPane and custom font
         questionTextArea = new JTextArea();
         questionTextArea.setLineWrap(true);
         questionTextArea.setWrapStyleWord(true);
         questionTextArea.setEditable(false);
-        questionTextArea.setFont(new Font("Serif", Font.PLAIN, 18));
+        questionTextArea.setFont(customFont.deriveFont(18f));
         JScrollPane scrollPane = new JScrollPane(questionTextArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Options buttons
+        // Options buttons with custom font
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new GridLayout(2, 2));
         for (int i = 0; i < 4; i++) {
             optionButtons[i] = new JButton("Option " + (i + 1));
+            optionButtons[i].setFont(customFont.deriveFont(16f));
             optionsPanel.add(optionButtons[i]);
         }
         add(optionsPanel, BorderLayout.SOUTH);
 
-        // Event listeners for buttons
+        // Event listeners for answer buttons
         for (JButton button : optionButtons) {
             button.addActionListener(new ActionListener() {
                 @Override
@@ -96,10 +112,12 @@ public class MillionaireGameGUI extends JFrame implements GameControl {
             });
         }
 
-        // Lifeline buttons
+        // Lifeline buttons with custom font
         JPanel lifelinePanel = new JPanel();
         fiftyFiftyButton = new JButton("50:50");
+        fiftyFiftyButton.setFont(customFont.deriveFont(14f));
         hintButton = new JButton("Hint");
+        hintButton.setFont(customFont.deriveFont(14f));
 
         lifelinePanel.add(fiftyFiftyButton);
         lifelinePanel.add(hintButton);
@@ -183,13 +201,31 @@ public class MillionaireGameGUI extends JFrame implements GameControl {
             score = prizeAmount;
             scoreLabel.setText("Score: $" + score);
             JOptionPane.showMessageDialog(this, "Correct! You won $" + prizeAmount);
+            System.out.println(answer);
+            System.out.println(currentQuestion.getCorrectAnswer());
         } else {
             JOptionPane.showMessageDialog(this, "Wrong answer!");
+            System.out.println(answer);
+            System.out.println(currentQuestion.getCorrectAnswer());
         }
 
         currentQuestionIndex++;
         loadNextQuestion();
     }
+
+    // Method to load custom font
+    private Font loadFont(String path, float size) {
+        try {
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font); // Register the font with the graphics environment
+            return font;
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+            return new Font("Serif", Font.PLAIN, (int) size); // Fallback to default font
+        }
+    }
 }
+
 
 
