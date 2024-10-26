@@ -2,13 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdcpart2;
+package pdcpart2.lifelines;
 
 /**
  *
  * @author setefanomuller
  */
 import javax.swing.*;
+import pdcpart2.model.Question;
 
 public abstract class Lifeline {
     protected boolean isUsed; // Common attribute for lifelines (whether the lifeline is used)
