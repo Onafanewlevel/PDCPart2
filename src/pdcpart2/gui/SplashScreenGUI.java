@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdcpart2;
+package pdcpart2.gui;
 
 /**
  *
@@ -14,7 +14,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import pdcpart2.model.Player;
 
+/**
+ * SplashScreenGUI prompts the player to enter their name before starting the game.
+ * It creates a Player object and passes it to the MillionaireGameGUI.
+ * 
+ * @author 
+ */
 public class SplashScreenGUI extends JFrame {
     private JTextField nameField;
     private JLabel titleLabel;
@@ -57,10 +64,11 @@ public class SplashScreenGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String playerName = nameField.getText();
+                String playerName = nameField.getText().trim();
                 if (!playerName.isEmpty()) {
+                    Player player = new Player(playerName); // Create Player object
                     dispose(); // Close the splash screen
-                    new MillionaireGameGUI(playerName); // Start the main game
+                    new MillionaireGameGUI(player); // Start the main game with Player object
                 } else {
                     JOptionPane.showMessageDialog(SplashScreenGUI.this, "Please enter your name to start the game.");
                 }
@@ -88,5 +96,6 @@ public class SplashScreenGUI extends JFrame {
         new SplashScreenGUI();
     }
 }
+
 
 

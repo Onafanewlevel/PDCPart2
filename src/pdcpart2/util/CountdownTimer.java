@@ -2,12 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdcpart2;
-
-/**
- *
- * @author setefanomuller
- */
+package pdcpart2.util;
 
 /**
  * The CountdownTimer class manages a countdown timer for a quiz game.
@@ -15,10 +10,14 @@ package pdcpart2;
  * of seconds and checks if the timer has run out. The timer stops if an
  * answer is provided before it reaches zero.
  *
- * @author Setefano Muller
- * @author Tharuka Rodrigo
+ * Author: Setefano Muller
+ * Author: Tharuka Rodrigo
  */
+
+import pdcpart2.interfaces.TimerListener;
+import pdcpart2.interfaces.TimeControl;
 import javax.swing.*;
+import pdcpart2.Messages;
 
 public class CountdownTimer implements TimeControl {
 
@@ -27,12 +26,21 @@ public class CountdownTimer implements TimeControl {
     private boolean timerRunOut;
     private JLabel countdownLabel;
     private Thread countdownThread;
+    private TimerListener listener; // Listener to notify when timer expires
 
-    public CountdownTimer(boolean answered, JLabel countdownLabel) {
+    /**
+     * Constructor for CountdownTimer.
+     *
+     * @param answered       Indicates if the question has been answered.
+     * @param countdownLabel The JLabel to display the remaining time.
+     * @param listener       The TimerListener to notify when the timer expires.
+     */
+    public CountdownTimer(boolean answered, JLabel countdownLabel, TimerListener listener) {
         message = new Messages();
         this.answered = answered;
         this.timerRunOut = false;
         this.countdownLabel = countdownLabel;
+        this.listener = listener;
     }
 
     @Override
@@ -47,11 +55,21 @@ public class CountdownTimer implements TimeControl {
                 final int timeLeft = i;
                 SwingUtilities.invokeLater(() -> countdownLabel.setText("Time left: " + timeLeft + " seconds"));
 
-                TimeUtil.pause(1000);  // Pause for 1 second
+                try {
+                    Thread.sleep(1000);  // Pause for 1 second
+                } catch (InterruptedException e) {
+                    // Thread interrupted; exit gracefully
+                    return;
+                }
             }
 
             if (!answered) {
-                SwingUtilities.invokeLater(() -> message.timesUp());  // Show time's up message
+                SwingUtilities.invokeLater(() -> {
+                    message.timesUp(); // Show time's up message
+                    if (listener != null) {
+                        listener.timerExpired(); // Notify the listener
+                    }
+                });
                 timerRunOut = true;
                 answered = true;
             }
@@ -79,5 +97,6 @@ public class CountdownTimer implements TimeControl {
         }
     }
 }
+
 
 
