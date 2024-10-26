@@ -2,15 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdcpart2;
+package pdcpart2.lifelines;
 
-/**
- *
- * @author setefanomuller
- */
-import javax.swing.*;
+import pdcpart2.model.Question;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import java.util.Random;
 
+/**
+ * FiftyFifty lifeline removes two incorrect answers from the available options.
+ * It ensures that the correct answer remains enabled.
+ */
 public class FiftyFifty extends Lifeline {
 
     /**
@@ -35,9 +37,11 @@ public class FiftyFifty extends Lifeline {
         // Disable two incorrect options randomly
         while (removed < 2) {
             int randIndex = random.nextInt(optionButtons.length);
-            String optionText = optionButtons[randIndex].getText();
-            if (!optionText.equals(correctAnswer) && optionButtons[randIndex].isEnabled()) {
-                optionButtons[randIndex].setEnabled(false); // Disable the incorrect option
+            JButton selectedButton = optionButtons[randIndex];
+            String selectedAnswer = selectedButton.getActionCommand(); // Use ActionCommand
+
+            if (!selectedAnswer.equals(correctAnswer) && selectedButton.isEnabled()) {
+                selectedButton.setEnabled(false); // Disable the incorrect option
                 removed++;
             }
         }
@@ -45,4 +49,5 @@ public class FiftyFifty extends Lifeline {
         isUsed = true;  // Mark the lifeline as used
     }
 }
+
 
