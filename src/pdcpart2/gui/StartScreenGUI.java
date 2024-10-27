@@ -4,10 +4,6 @@
  */
 package pdcpart2.gui;
 
-/**
- *
- * @author setefanomuller
- */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,20 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import pdcpart2.model.Player;
 
-/**
- * SplashScreenGUI prompts the player to enter their name before starting the game.
- * It creates a Player object and passes it to the MillionaireGameGUI.
- * 
- * @author 
- */
-public class SplashScreenGUI extends JFrame {
+public class StartScreenGUI extends JFrame {
     private JTextField nameField;
     private JLabel titleLabel;
     private JButton startButton;
 
-    public SplashScreenGUI() {
+    public StartScreenGUI() {
         // Load custom font
-        Font customFont = loadFont("src/resources/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
+        Font customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
 
         // Frame setup
         setTitle("Who Wants to Become a Millionaire");
@@ -70,7 +60,7 @@ public class SplashScreenGUI extends JFrame {
                     dispose(); // Close the splash screen
                     new MillionaireGameGUI(player); // Start the main game with Player object
                 } else {
-                    JOptionPane.showMessageDialog(SplashScreenGUI.this, "Please enter your name to start the game.");
+                    JOptionPane.showMessageDialog(StartScreenGUI.this, "Please enter your name to start the game.");
                 }
             }
         });
@@ -93,9 +83,10 @@ public class SplashScreenGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new SplashScreenGUI();
+        new StartScreenGUI();
     }
 }
+
 
 
 
