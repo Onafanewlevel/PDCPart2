@@ -5,15 +5,14 @@
 package pdcpart2.gui;
 
 /**
- * MillionaireGameGUI manages the main game interface, handling questions, options, scores,
- * lifelines, and player interactions using the Player object.
- * 
- * Implements the GameControl and TimerListener interfaces to control game flow and respond
- * to timer expiration events.
- * 
- * Author: 
+ * MillionaireGameGUI manages the main game interface, handling questions,
+ * options, scores, lifelines, and player interactions using the Player object.
+ *
+ * Implements the GameControl and TimerListener interfaces to control game flow
+ * and respond to timer expiration events.
+ *
+ * Author:
  */
-
 import pdcpart2.interfaces.TimerListener;
 import pdcpart2.interfaces.GameControl;
 import pdcpart2.lifelines.Hint;
@@ -33,6 +32,7 @@ import pdcpart2.model.Question;
 import pdcpart2.util.QuestionDatabaseLoader;
 
 public class MillionaireGameGUI extends JFrame implements GameControl, TimerListener {
+
     private JTextArea questionTextArea;
     private JButton[] optionButtons = new JButton[4];
     private JLabel scoreLabel;
@@ -64,7 +64,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         hintLifeline = new Hint();
 
         // Load custom font
-        customFont = loadFont("src/resources/fonts/MesloLGS NF Regular.ttf", 18f);
+        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f);
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
@@ -86,7 +86,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         scoreLabel.setFont(customFont.deriveFont(16f));
         playerLabel = new JLabel("Player: " + player.getName());
         playerLabel.setFont(customFont.deriveFont(16f));
-        
+
         JPanel infoPanel = new JPanel(new GridLayout(1, 3));
         infoPanel.add(scoreLabel);
         infoPanel.add(playerLabel);
@@ -195,14 +195,40 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     public void StopGame() {
         // Ensure that this is executed on the EDT
         SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(this, "Congratulations " + player.getName() + "! You won $" + player.getScore());
-            System.exit(0);
+            // Create a message based on whether the player won or lost
+            String message;
+            if (currentQuestionIndex >= questions.size()) {
+                message = "Congratulations " + player.getName() + "! You won $" + player.getScore() + ".\nDo you want to play again?";
+            } else {
+                message = "Game Over! You won $" + player.getScore() + ".\nDo you want to play again?";
+            }
+
+            // Show a confirmation dialog with Yes and No options
+            int response = JOptionPane.showConfirmDialog(
+                    this,
+                    message,
+                    "Game Over",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (response == JOptionPane.YES_OPTION) {
+                // Player chose to play again
+                // Dispose of the current game window
+                this.dispose();
+
+                // Open the StartScreenGUI
+                new StartScreenGUI();
+            } else {
+                // Player chose not to play again; exit the application
+                System.exit(0);
+            }
         });
     }
 
     /**
-     * This method is called when the countdown timer expires.
-     * It ends the game by invoking StopGame().
+     * This method is called when the countdown timer expires. It ends the game
+     * by invoking StopGame().
      */
     @Override
     public void timerExpired() {
@@ -303,10 +329,10 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private String formatButtonText(String text) {
         // Using table layout to center text vertically and horizontally
         return "<html>"
-             + "<div style='display: table; height: 100%; width: 150px; text-align: center;'>"
-             + "<span style='display: table-cell; vertical-align: middle;'>" + text + "</span>"
-             + "</div>"
-             + "</html>";
+                + "<div style='display: table; height: 100%; width: 150px; text-align: center;'>"
+                + "<span style='display: table-cell; vertical-align: middle;'>" + text + "</span>"
+                + "</div>"
+                + "</html>";
     }
 
     /**
@@ -328,4 +354,3 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         }
     }
 }
-
