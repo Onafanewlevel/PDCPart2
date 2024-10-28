@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * DatabaseInitializer is responsible for setting up the Apache Derby Embedded database.
- * It creates the Questions table if it doesn't exist and populates it with initial data.
+ * DatabaseInitializer is responsible for setting up the Apache Derby Embedded
+ * database. It creates the Questions table if it doesn't exist and populates it
+ * with initial data.
  *
- * Usage:
- *     DatabaseInitializer initializer = new DatabaseInitializer("QuestionsDB");
- *     initializer.initializeDatabase();
- *     initializer.populateDatabase();
+ * Usage: DatabaseInitializer initializer = new
+ * DatabaseInitializer("QuestionsDB"); initializer.initializeDatabase();
+ * initializer.populateDatabase();
  */
 public class DatabaseInitializer {
 
@@ -30,7 +30,8 @@ public class DatabaseInitializer {
     private String jdbcURL;
 
     /**
-     * Constructor to initialize the DatabaseInitializer with the specified database path.
+     * Constructor to initialize the DatabaseInitializer with the specified
+     * database path.
      *
      * @param databasePath The path to the Embedded Derby database.
      */
@@ -40,7 +41,8 @@ public class DatabaseInitializer {
     }
 
     /**
-     * Initializes the database by creating the Questions table if it doesn't exist.
+     * Initializes the database by creating the Questions table if it doesn't
+     * exist.
      */
     public void initializeDatabase() {
         try {
@@ -48,8 +50,7 @@ public class DatabaseInitializer {
             Class.forName(DERBY_EMBEDDED_DRIVER);
             System.out.println("Derby Embedded Driver loaded successfully.");
 
-            try (Connection conn = DriverManager.getConnection(jdbcURL);
-                 Statement stmt = conn.createStatement()) {
+            try ( Connection conn = DriverManager.getConnection(jdbcURL);  Statement stmt = conn.createStatement()) {
 
                 // Check if the Questions table exists by attempting to query it
                 if (!doesTableExist(conn, "QUESTIONS")) {
@@ -85,7 +86,7 @@ public class DatabaseInitializer {
      * Populates the Questions table with initial data if it's empty.
      */
     public void populateDatabase() {
-        try (Connection conn = DriverManager.getConnection(jdbcURL)) {
+        try ( Connection conn = DriverManager.getConnection(jdbcURL)) {
 
             // Check if the Questions table is empty
             if (isTableEmpty(conn, "Questions")) {
@@ -93,7 +94,7 @@ public class DatabaseInitializer {
                 String insertSQL = "INSERT INTO Questions (question, option_a, option_b, option_c, option_d, correct_answer, hint) "
                         + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-                try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                try ( PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                     for (Question q : initialQuestions) {
                         pstmt.setString(1, q.getQuestionText());
                         pstmt.setString(2, q.getOptionA());
@@ -123,12 +124,12 @@ public class DatabaseInitializer {
     /**
      * Checks if a specific table exists in the database.
      *
-     * @param conn      The database connection.
+     * @param conn The database connection.
      * @param tableName The name of the table to check.
      * @return true if the table exists, false otherwise.
      */
     private boolean doesTableExist(Connection conn, String tableName) {
-        try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
+        try ( ResultSet rs = conn.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
             return rs.next();
         } catch (SQLException e) {
             System.err.println("Error checking if table " + tableName + " exists.");
@@ -140,14 +141,13 @@ public class DatabaseInitializer {
     /**
      * Checks if a specific table is empty.
      *
-     * @param conn      The database connection.
+     * @param conn The database connection.
      * @param tableName The name of the table to check.
      * @return true if the table is empty, false otherwise.
      */
     private boolean isTableEmpty(Connection conn, String tableName) {
         String countSQL = "SELECT COUNT(*) FROM " + tableName;
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(countSQL)) {
+        try ( Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(countSQL)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count == 0;
@@ -168,55 +168,154 @@ public class DatabaseInitializer {
         List<Question> questions = new ArrayList<>();
 
         questions.add(new Question(
-                "What is the capital of France?",
-                "Berlin",
-                "London",
-                "Paris",
-                "Madrid",
-                "Paris",
-                "It's also known as the City of Light."
+                "What is a variable in programming?",
+                "A fixed value",
+                "A random value",
+                "A changeable value",
+                "A funtion",
+                "A changeable value",
+                "It stores information that can be changed."
         ));
 
         questions.add(new Question(
-                "Which planet is known as the Red Planet?",
-                "Earth",
-                "Mars",
-                "Jupiter",
-                "Venus",
-                "Mars",
-                "It's the fourth planet from the Sun."
+                "What does 'HTML' stand for?",
+                "HyperText Markup Language",
+                "HighText Machine Language",
+                "HyperLoop Machine Language",
+                "Home Tool Markup Language",
+                "HyperText Markup Language",
+                "It is used to create web pages."
         ));
 
         questions.add(new Question(
-                "Who wrote the play 'Romeo and Juliet'?",
-                "William Wordsworth",
-                "William Shakespeare",
-                "George Bernard Shaw",
-                "Jane Austen",
-                "William Shakespeare",
-                "He is often called England's national poet."
+                "Which keyword is used to define a function in Python?",
+                "func",
+                "function",
+                "def",
+                "define",
+                "def",
+                "It tells Python to create a function."
         ));
 
         questions.add(new Question(
-                "What is the largest ocean on Earth?",
-                "Atlantic Ocean",
-                "Indian Ocean",
-                "Arctic Ocean",
-                "Pacific Ocean",
-                "Pacific Ocean",
-                "It's larger than all the landmasses combined."
+                "What does 'CSS' stand for?",
+                "Cascading Style System",
+                "Computer Style Sheets",
+                "Cascading Style Sheets",
+                "Colorful Style Sheets",
+                "Cascading Style Sheets",
+                "It is used for designing web pages."
         ));
 
         questions.add(new Question(
-                "Which element has the chemical symbol 'O'?",
-                "Gold",
-                "Oxygen",
-                "Silver",
-                "Iron",
-                "Oxygen",
-                "It's essential for human respiration."
+                "What is the use of a loop in programming?",
+                "To perform a task only once",
+                "To repeat a block of code",
+                "To create an error",
+                "To stop the code",
+                "To repeat a block of code",
+                "Useful for iterating over data."
         ));
 
+        questions.add(new Question(
+                "What does 'OOP' stand for?",
+                "Object Over Process",
+                "Object-Oriented Programming",
+                "Ordered Object Programming",
+                "Overridden Object Properties",
+                "Object-Oriented Programming",
+                "It is a paradigm based on classes and objects."
+        ));
+
+        questions.add(new Question(
+                "Which of these is not a programming language?",
+                "Python",
+                "JavaScript",
+                "HTML",
+                "Java",
+                "HTML",
+                "One of these is a markup language only."
+        ));
+
+        questions.add(new Question(
+                "What is the purpose of an 'if' statement??",
+                "To loop code",
+                "To declare variables",
+                "To make decisions",
+                "To terminate a program",
+                "To make decisions",
+                "Used for conditional execution."
+        ));
+
+        questions.add(new Question(
+                "What is the extension of JavaScript files?",
+                ".java",
+                ".html",
+                ".js",
+                ".css",
+                ".js",
+                "JavaScript files use .js extension."
+        ));
+
+        questions.add(new Question(
+                "Which of these is used to style a webpage??",
+                "Python",
+                "HTML",
+                "JavaScript",
+                "CSS",
+                "CSS",
+                "CSS helps in designing the visual part of the webpage."
+        ));
+
+        questions.add(new Question(
+                "What does 'API' stand for?",
+                "Application Performance Interface",
+                "Application Programming Integration",
+                "Application Programming Interface",
+                "Automated Process Integration",
+                "Application Programming Interface",
+                "It allows different software applications to communicate with each other."
+        ));
+
+        questions.add(new Question(
+                "Which operator is used for equality in JavaScript?",
+                "==",
+                "!=",
+                "=",
+                ":",
+                "==",
+                "Checks if two values are equal."
+        ));
+
+        questions.add(new Question(
+                "What does 'SQL' stand for??",
+                "Structured Quality Language",
+                "Sequential Query Logic",
+                "Structured Query Language",
+                "Standard Query Layout",
+                "Structured Query Language",
+                "It is used for managing databases."
+        ));
+
+        questions.add(new Question(
+                "What is an algorithm?",
+                "A flowchart",
+                "A diagram",
+                "A step-by-step set of instructions to solve a problem",
+                "A database",
+                "A step-by-step set of instructions to solve a problem",
+                "It is used to solve problems systematically."
+        ));
+
+        questions.add(new Question(
+                "What is an IDE?",
+                "Integrated Digital Environment",
+                "Interactive Data Editors",
+                "Integrated Development Environment",
+                "Internal Debugging Editor",
+                "Integrated Development Environment",
+                "It's a software application for developers."
+        ));
         // Add more questions as needed
 
         return questions;
@@ -238,5 +337,3 @@ public class DatabaseInitializer {
         }
     }
 }
-
-
