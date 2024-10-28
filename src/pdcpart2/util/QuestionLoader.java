@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * QuestionDatabaseLoader loads quiz questions from the Derby embedded database.
+ * QuestionLoader loads quiz questions from the Derby embedded database.
  */
-public class QuestionDatabaseLoader {
+public class QuestionLoader {
     private List<Question> questions = new ArrayList<>();
 
     // Constructor to initialize and load questions from the database
-    public QuestionDatabaseLoader(String databasePath) {
+    public QuestionLoader(String databasePath) {
         loadQuestions(databasePath);
     }
 

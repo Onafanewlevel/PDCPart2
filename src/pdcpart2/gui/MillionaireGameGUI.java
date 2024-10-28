@@ -14,13 +14,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import pdcpart2.util.CountdownTimer;
+import pdcpart2.util.TimeUtil;
 import pdcpart2.model.Player;
 import pdcpart2.model.PrizeLevel;
 import pdcpart2.model.Question;
-import pdcpart2.util.QuestionDatabaseLoader;
+import pdcpart2.util.QuestionLoader;
 import pdcpart2.util.DatabaseInitializer;
-import pdcpart2.util.FontLoader; // Import the FontLoader class
+import pdcpart2.util.FontLoader;
 
 /**
  * MillionaireGameGUI manages the main game interface, handling questions,
@@ -44,7 +44,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private int currentQuestionIndex = 0;
     private Lifeline fiftyFiftyLifeline;
     private Lifeline hintLifeline;
-    private CountdownTimer countdownTimer;
+    private TimeUtil countdownTimer;
     private Player player;
 
     // Lifeline buttons
@@ -85,7 +85,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         dbInitializer = DatabaseInitializer.getInstance(DATABASE_PATH);
 
         // Load questions from the embedded database
-        QuestionDatabaseLoader reader = new QuestionDatabaseLoader(DATABASE_PATH);
+        QuestionLoader reader = new QuestionLoader(DATABASE_PATH);
         questions = reader.getQuestions();
 
         // Initialize GUI components
@@ -301,7 +301,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             }
 
             // Initialize and start the countdown timer (e.g., 15 seconds to answer)
-            countdownTimer = new CountdownTimer(false, countdownLabel, this); // Pass 'this' as the listener
+            countdownTimer = new TimeUtil(false, countdownLabel, this); // Pass 'this' as the listener
             countdownTimer.StartTimer();
 
             // Reset message label for new question
@@ -323,11 +323,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
         // Pause for a brief moment before showing the result
         // Consider using a Swing Timer instead of Thread.sleep to avoid freezing the UI
-        try {
-            Thread.sleep(0); // Pause for 0 milliseconds (no pause)
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        countdownTimer.pause(2000);
 
         Question currentQuestion = questions.get(currentQuestionIndex);
         if (selectedAnswer.equals(currentQuestion.getCorrectAnswer())) {
