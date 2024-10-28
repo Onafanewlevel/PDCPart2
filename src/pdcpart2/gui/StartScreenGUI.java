@@ -1,39 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pdcpart2.gui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import pdcpart2.model.Player;
 import pdcpart2.util.DatabaseInitializer;
+import pdcpart2.util.FontLoader; // Import the FontLoader class
 
 /**
- * StartScreenGUI prompts the player to enter their name before starting the game.
- * It creates a Player object and passes it to the MillionaireGameGUI.
+ * StartScreenGUI prompts the player to enter their name before starting the
+ * game. It creates a Player object and passes it to the MillionaireGameGUI.
  * Utilizes Derby Embedded mode for database connectivity.
- * 
+ *
  * Author: Setefano Muller 16924823
  */
 public class StartScreenGUI extends JFrame {
+
+    private DatabaseInitializer dbInitializer;
     private JTextField nameField;
     private JLabel titleLabel;
     private JButton startButton;
     private Font customFont;
 
     public StartScreenGUI() {
-        // Initialize the database
-        DatabaseInitializer dbInitializer = new DatabaseInitializer("QuestionsDB");
-        dbInitializer.initializeDatabase();
-        dbInitializer.populateDatabase();
-
-        // Load custom font
-        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
+        // Load custom font using FontLoader
+        customFont = FontLoader.loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
 
         // Frame setup
         setTitle("Who Wants to Become a Millionaire");
@@ -46,7 +38,7 @@ public class StartScreenGUI extends JFrame {
 
         // Title Label with custom font
         titleLabel = new JLabel("Who Wants to Become a Millionaire", SwingConstants.CENTER);
-        titleLabel.setFont(customFont); // Apply custom font
+        titleLabel.setFont(customFont.deriveFont(40f)); // Apply custom font
         add(titleLabel, BorderLayout.NORTH);
 
         // Name Input Panel with custom font
@@ -61,7 +53,7 @@ public class StartScreenGUI extends JFrame {
 
         // Start Button with custom font
         startButton = new JButton("Start Game");
-        startButton.setFont(customFont.deriveFont(18f)); // Adjust size for button
+        startButton.setFont(customFont.deriveFont(18f));
         add(startButton, BorderLayout.SOUTH);
 
         // Add action listener for the start button
@@ -80,44 +72,11 @@ public class StartScreenGUI extends JFrame {
             }
         });
 
-        // Optional: Add a window listener to shut down the database when the window closes
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                dbInitializer.shutdownDatabase();
-            }
-        });
-
         // Display the splash screen
         setVisible(true);
-    }
-
-    /**
-     * Method to load a custom font from the specified path.
-     * 
-     * @param path The path to the font file.
-     * @param size The desired font size.
-     * @return The loaded Font object.
-     */
-    private Font loadFont(String path, float size) {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font); // Register the font with the graphics environment
-            return font;
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            return new Font("Serif", Font.PLAIN, (int) size); // Fallback to default font
-        }
     }
 
     public static void main(String[] args) {
         new StartScreenGUI();
     }
 }
-
-
-
-
-
-

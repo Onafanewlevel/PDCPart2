@@ -13,8 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import pdcpart2.util.CountdownTimer;
 import pdcpart2.model.Player;
@@ -22,6 +20,7 @@ import pdcpart2.model.PrizeLevel;
 import pdcpart2.model.Question;
 import pdcpart2.util.QuestionDatabaseLoader;
 import pdcpart2.util.DatabaseInitializer;
+import pdcpart2.util.FontLoader; // Import the FontLoader class
 
 /**
  * MillionaireGameGUI manages the main game interface, handling questions,
@@ -30,7 +29,7 @@ import pdcpart2.util.DatabaseInitializer;
  * Implements the GameControl and TimerListener interfaces to control game flow
  * and respond to timer expiration events.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller
  */
 public class MillionaireGameGUI extends JFrame implements GameControl, TimerListener {
 
@@ -40,20 +39,20 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private JLabel playerLabel;
     private JLabel messageLabel;
     private JLabel countdownLabel;
+    private DatabaseInitializer dbInitializer;
     private List<Question> questions;
     private int currentQuestionIndex = 0;
     private Lifeline fiftyFiftyLifeline;
     private Lifeline hintLifeline;
     private CountdownTimer countdownTimer;
-    private Player player; // Player object
+    private Player player;
 
     // Lifeline buttons
     private JButton fiftyFiftyButton;
     private JButton hintButton;
 
     // Database connection parameters for Embedded Mode
-    private static final String DATABASE_PATH = "QuestionsDB"; // Relative path to the database
-    // No USERNAME and PASSWORD needed for Embedded Mode
+    private static final String DATABASE_PATH = "QuestionDB"; // Relative path to the database
 
     // Custom font reference
     private Font customFont;
@@ -68,8 +67,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         fiftyFiftyLifeline = new FiftyFifty();
         hintLifeline = new Hint();
 
-        // Load custom font
-        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
+        // Load custom font using FontLoader
+        customFont = FontLoader.loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
@@ -83,9 +82,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         setLocationRelativeTo(null);
 
         // Initialize and populate the database
-        DatabaseInitializer dbInitializer = new DatabaseInitializer(DATABASE_PATH);
-        dbInitializer.initializeDatabase();
-        dbInitializer.populateDatabase();
+        dbInitializer = DatabaseInitializer.getInstance(DATABASE_PATH);
 
         // Load questions from the embedded database
         QuestionDatabaseLoader reader = new QuestionDatabaseLoader(DATABASE_PATH);
@@ -101,7 +98,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                dbInitializer.shutdownDatabase(); // Corrected: Call shutdown on dbInitializer
+                dbInitializer.shutdownDatabase();
+                System.exit(0); // Ensure the application exits after shutdown
             }
         });
 
@@ -247,7 +245,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 new StartScreenGUI();
             } else {
                 // Player chose not to play again; exit the application 
-                System.exit(0);
+                System.exit(0);               
             }
         });
     }
@@ -326,7 +324,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         // Pause for a brief moment before showing the result
         // Consider using a Swing Timer instead of Thread.sleep to avoid freezing the UI
         try {
-            Thread.sleep(500); // Pause for 0.5 seconds
+            Thread.sleep(0); // Pause for 0 milliseconds (no pause)
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -337,12 +335,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             player.setScore(prizeAmount); // Update score in Player object
             scoreLabel.setText("Score: $" + player.getScore());
             JOptionPane.showMessageDialog(this, "Correct! You won $" + prizeAmount);
-            System.out.println("Selected Answer: " + selectedAnswer);
-            System.out.println("Correct Answer: " + currentQuestion.getCorrectAnswer());
         } else {
             JOptionPane.showMessageDialog(this, "Wrong answer! The correct answer was: " + currentQuestion.getCorrectAnswer());
-            System.out.println("Selected Answer: " + selectedAnswer);
-            System.out.println("Correct Answer: " + currentQuestion.getCorrectAnswer());
             StopGame(); // End the game immediately on wrong answer
             return; // Exit the method to prevent proceeding to the next question
         }
@@ -365,23 +359,5 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 + "</div>"
                 + "</html>";
     }
-
-    /**
-     * Loads a custom font from the specified path.
-     *
-     * @param path The path to the font file.
-     * @param size The desired font size.
-     * @return The loaded Font object.
-     */
-    private Font loadFont(String path, float size) {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font); // Register the font with the graphics environment
-            return font;
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            return new Font("Serif", Font.PLAIN, (int) size); // Fallback to default font
-        }
-    }
 }
+

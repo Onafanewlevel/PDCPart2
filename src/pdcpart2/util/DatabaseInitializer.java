@@ -18,16 +18,16 @@ import java.util.ArrayList;
  * DatabaseInitializer is responsible for setting up the Apache Derby Embedded
  * database. It creates the Questions table if it doesn't exist and populates it
  * with initial data.
- *
- * Usage: DatabaseInitializer initializer = new
- * DatabaseInitializer("QuestionsDB"); initializer.initializeDatabase();
- * initializer.populateDatabase();
+ * 
+ * @Author: Setefano Muller
+ *          Tharuka Rodrigo
  */
 public class DatabaseInitializer {
 
     private static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     private String databasePath;
     private String jdbcURL;
+    private static DatabaseInitializer instance;
 
     /**
      * Constructor to initialize the DatabaseInitializer with the specified
@@ -40,6 +40,15 @@ public class DatabaseInitializer {
         this.jdbcURL = "jdbc:derby:" + this.databasePath + ";create=true";
     }
 
+    public static synchronized DatabaseInitializer getInstance(String databasePath) {
+        if (instance == null) {
+            instance = new DatabaseInitializer(databasePath);
+            instance.initializeDatabase();
+            instance.populateDatabase();
+        }
+        return instance;
+    }
+
     /**
      * Initializes the database by creating the Questions table if it doesn't
      * exist.
@@ -50,7 +59,7 @@ public class DatabaseInitializer {
             Class.forName(DERBY_EMBEDDED_DRIVER);
             System.out.println("Derby Embedded Driver loaded successfully.");
 
-            try ( Connection conn = DriverManager.getConnection(jdbcURL);  Statement stmt = conn.createStatement()) {
+            try (Connection conn = DriverManager.getConnection(jdbcURL); Statement stmt = conn.createStatement()) {
 
                 // Check if the Questions table exists by attempting to query it
                 if (!doesTableExist(conn, "QUESTIONS")) {
@@ -86,7 +95,7 @@ public class DatabaseInitializer {
      * Populates the Questions table with initial data if it's empty.
      */
     public void populateDatabase() {
-        try ( Connection conn = DriverManager.getConnection(jdbcURL)) {
+        try (Connection conn = DriverManager.getConnection(jdbcURL)) {
 
             // Check if the Questions table is empty
             if (isTableEmpty(conn, "Questions")) {
@@ -94,7 +103,7 @@ public class DatabaseInitializer {
                 String insertSQL = "INSERT INTO Questions (question, option_a, option_b, option_c, option_d, correct_answer, hint) "
                         + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-                try ( PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                     for (Question q : initialQuestions) {
                         pstmt.setString(1, q.getQuestionText());
                         pstmt.setString(2, q.getOptionA());
@@ -129,7 +138,7 @@ public class DatabaseInitializer {
      * @return true if the table exists, false otherwise.
      */
     private boolean doesTableExist(Connection conn, String tableName) {
-        try ( ResultSet rs = conn.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
+        try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
             return rs.next();
         } catch (SQLException e) {
             System.err.println("Error checking if table " + tableName + " exists.");
@@ -147,7 +156,7 @@ public class DatabaseInitializer {
      */
     private boolean isTableEmpty(Connection conn, String tableName) {
         String countSQL = "SELECT COUNT(*) FROM " + tableName;
-        try ( Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(countSQL)) {
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(countSQL)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count == 0;
@@ -316,7 +325,6 @@ public class DatabaseInitializer {
                 "Integrated Development Environment",
                 "It's a software application for developers."
         ));
-        // Add more questions as needed
 
         return questions;
     }
@@ -324,7 +332,7 @@ public class DatabaseInitializer {
     /**
      * Shuts down the Derby Embedded database explicitly.
      */
-    public void shutdownDatabase() {
+    public synchronized void shutdownDatabase() {
         try {
             DriverManager.getConnection("jdbc:derby:;shutdown=true");
         } catch (SQLException e) {
@@ -336,4 +344,5 @@ public class DatabaseInitializer {
             }
         }
     }
+
 }
