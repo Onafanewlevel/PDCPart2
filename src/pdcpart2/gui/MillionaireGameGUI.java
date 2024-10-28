@@ -4,15 +4,6 @@
  */
 package pdcpart2.gui;
 
-/**
- * MillionaireGameGUI manages the main game interface, handling questions,
- * options, scores, lifelines, and player interactions using the Player object.
- *
- * Implements the GameControl and TimerListener interfaces to control game flow
- * and respond to timer expiration events.
- *
- * Author:
- */
 import pdcpart2.interfaces.TimerListener;
 import pdcpart2.interfaces.GameControl;
 import pdcpart2.lifelines.Hint;
@@ -30,7 +21,17 @@ import pdcpart2.model.Player;
 import pdcpart2.model.PrizeLevel;
 import pdcpart2.model.Question;
 import pdcpart2.util.QuestionDatabaseLoader;
+import pdcpart2.util.DatabaseInitializer;
 
+/**
+ * MillionaireGameGUI manages the main game interface, handling questions,
+ * options, scores, lifelines, and player interactions using the Player object.
+ *
+ * Implements the GameControl and TimerListener interfaces to control game flow
+ * and respond to timer expiration events.
+ *
+ * Author: [Your Name]
+ */
 public class MillionaireGameGUI extends JFrame implements GameControl, TimerListener {
 
     private JTextArea questionTextArea;
@@ -50,21 +51,25 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private JButton fiftyFiftyButton;
     private JButton hintButton;
 
-    // Database connection parameters
-    private static final String DATABASE_URL = "jdbc:derby://localhost:1527/QuestionsDB";
-    private static final String USERNAME = "pdc2";
-    private static final String PASSWORD = "pdc2";
+    // Database connection parameters for Embedded Mode
+    private static final String DATABASE_PATH = "QuestionsDB"; // Relative path to the database
+    // No USERNAME and PASSWORD needed for Embedded Mode
 
     // Custom font reference
     private Font customFont;
 
+    /**
+     * Constructor to initialize the MillionaireGameGUI.
+     *
+     * @param player The Player object containing player information.
+     */
     public MillionaireGameGUI(Player player) {
         this.player = player; // Initialize with Player object
         fiftyFiftyLifeline = new FiftyFifty();
         hintLifeline = new Hint();
 
         // Load custom font
-        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f);
+        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
@@ -77,10 +82,37 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         // Center the window on the screen
         setLocationRelativeTo(null);
 
-        // Load questions from the database
-        QuestionDatabaseLoader reader = new QuestionDatabaseLoader(DATABASE_URL, USERNAME, PASSWORD);
+        // Initialize and populate the database
+        DatabaseInitializer dbInitializer = new DatabaseInitializer(DATABASE_PATH);
+        dbInitializer.initializeDatabase();
+        dbInitializer.populateDatabase();
+
+        // Load questions from the embedded database
+        QuestionDatabaseLoader reader = new QuestionDatabaseLoader(DATABASE_PATH);
         questions = reader.getQuestions();
 
+        // Initialize GUI components
+        initializeGUIComponents();
+
+        // Start the game
+        StartGame();
+
+        // Add a window listener to shut down the database when the window closes
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                dbInitializer.shutdownDatabase(); // Corrected: Call shutdown on dbInitializer
+            }
+        });
+
+        // Show frame
+        setVisible(true);
+    }
+
+    /**
+     * Initializes all GUI components and layouts.
+     */
+    private void initializeGUIComponents() {
         // Score and player display with custom font
         scoreLabel = new JLabel("Score: $" + player.getScore());
         scoreLabel.setFont(customFont.deriveFont(16f));
@@ -92,7 +124,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         infoPanel.add(playerLabel);
 
         // Countdown label with custom font
-        countdownLabel = new JLabel("Time left: ");
+        countdownLabel = new JLabel("Time left: 15");
         countdownLabel.setFont(customFont.deriveFont(16f));
         infoPanel.add(countdownLabel);
         add(infoPanel, BorderLayout.NORTH);
@@ -117,7 +149,6 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         for (int i = 0; i < 4; i++) {
             optionButtons[i] = new JButton();
             optionButtons[i].setFont(customFont.deriveFont(16f));
-            // Removed vertical alignment setting to allow centering
             optionButtons[i].setMargin(new Insets(10, 10, 10, 10)); // Optional: Adjust padding
             optionsPanel.add(optionButtons[i]);
         }
@@ -178,12 +209,6 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 }
             }
         });
-
-        // Start the game
-        StartGame();
-
-        // Show frame
-        setVisible(true);
     }
 
     @Override
@@ -236,6 +261,9 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         StopGame();
     }
 
+    /**
+     * Loads the next question in the list.
+     */
     private void loadNextQuestion() {
         if (currentQuestionIndex < questions.size()) {
             Question currentQuestion = questions.get(currentQuestionIndex);
@@ -273,7 +301,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 hintButton.setEnabled(true);
             }
 
-            // Start countdown for the question (e.g., 15 seconds to answer)
+            // Initialize and start the countdown timer (e.g., 15 seconds to answer)
             countdownTimer = new CountdownTimer(false, countdownLabel, this); // Pass 'this' as the listener
             countdownTimer.StartTimer();
 
@@ -294,9 +322,10 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             countdownTimer.StopTimer();
         }
 
-        // Pause for 2 seconds before showing the result
+        // Pause for a brief moment before showing the result
+        // Consider using a Swing Timer instead of Thread.sleep to avoid freezing the UI
         try {
-            Thread.sleep(0);
+            Thread.sleep(500); // Pause for 0.5 seconds
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -314,6 +343,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             System.out.println("Selected Answer: " + selectedAnswer);
             System.out.println("Correct Answer: " + currentQuestion.getCorrectAnswer());
             StopGame(); // End the game immediately on wrong answer
+            return; // Exit the method to prevent proceeding to the next question
         }
 
         currentQuestionIndex++;

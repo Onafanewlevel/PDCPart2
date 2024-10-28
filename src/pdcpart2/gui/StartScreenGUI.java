@@ -11,15 +11,29 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import pdcpart2.model.Player;
+import pdcpart2.util.DatabaseInitializer;
 
+/**
+ * StartScreenGUI prompts the player to enter their name before starting the game.
+ * It creates a Player object and passes it to the MillionaireGameGUI.
+ * Utilizes Derby Embedded mode for database connectivity.
+ * 
+ * Author: [Your Name]
+ */
 public class StartScreenGUI extends JFrame {
     private JTextField nameField;
     private JLabel titleLabel;
     private JButton startButton;
+    private Font customFont;
 
     public StartScreenGUI() {
+        // Initialize the database
+        DatabaseInitializer dbInitializer = new DatabaseInitializer("QuestionsDB");
+        dbInitializer.initializeDatabase();
+        dbInitializer.populateDatabase();
+
         // Load custom font
-        Font customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
+        customFont = loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
 
         // Frame setup
         setTitle("Who Wants to Become a Millionaire");
@@ -60,8 +74,17 @@ public class StartScreenGUI extends JFrame {
                     dispose(); // Close the splash screen
                     new MillionaireGameGUI(player); // Start the main game with Player object
                 } else {
-                    JOptionPane.showMessageDialog(StartScreenGUI.this, "Please enter your name to start the game.");
+                    JOptionPane.showMessageDialog(StartScreenGUI.this, "Please enter your name to start the game.",
+                            "Input Required", JOptionPane.WARNING_MESSAGE);
                 }
+            }
+        });
+
+        // Optional: Add a window listener to shut down the database when the window closes
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                dbInitializer.shutdownDatabase();
             }
         });
 
@@ -69,7 +92,13 @@ public class StartScreenGUI extends JFrame {
         setVisible(true);
     }
 
-    // Method to load custom font
+    /**
+     * Method to load a custom font from the specified path.
+     * 
+     * @param path The path to the font file.
+     * @param size The desired font size.
+     * @return The loaded Font object.
+     */
     private Font loadFont(String path, float size) {
         try {
             Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
@@ -86,6 +115,8 @@ public class StartScreenGUI extends JFrame {
         new StartScreenGUI();
     }
 }
+
+
 
 
 
