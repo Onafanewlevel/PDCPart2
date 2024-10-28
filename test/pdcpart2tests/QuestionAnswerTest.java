@@ -6,7 +6,7 @@ import org.junit.After;
 import static org.junit.Assert.*;
 
 import pdcpart2.util.DatabaseInitializer;
-import pdcpart2.util.QuestionDatabaseLoader;
+import pdcpart2.util.QuestionLoader;
 import pdcpart2.model.Question;
 
 import java.io.File;
@@ -27,7 +27,7 @@ public class QuestionAnswerTest {
     private static final String TEST_DATABASE_PATH = "TestQuestionsDB";
 
     private DatabaseInitializer dbInitializer;
-    private QuestionDatabaseLoader questionLoader;
+    private QuestionLoader questionLoader;
 
     /**
      * Setup method to initialize and populate the database before each test.
@@ -39,8 +39,8 @@ public class QuestionAnswerTest {
         dbInitializer.initializeDatabase();
         dbInitializer.populateDatabase();
 
-        // Load questions using QuestionDatabaseLoader
-        questionLoader = new QuestionDatabaseLoader(TEST_DATABASE_PATH);
+        // Load questions using QuestionLoader
+        questionLoader = new QuestionLoader(TEST_DATABASE_PATH);
     }
 
     /**
