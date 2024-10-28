@@ -18,7 +18,7 @@ import pdcpart2.util.DatabaseInitializer;
  * It creates a Player object and passes it to the MillionaireGameGUI.
  * Utilizes Derby Embedded mode for database connectivity.
  * 
- * Author: [Your Name]
+ * Author: Setefano Muller 16924823
  */
 public class StartScreenGUI extends JFrame {
     private JTextField nameField;

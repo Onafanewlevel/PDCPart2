@@ -86,9 +86,9 @@ public class CountdownTimer implements TimeControl {
         }
     }
 
-    public boolean hasTimerRunOut() {
-        return timerRunOut;
-    }
+//    public boolean hasTimerRunOut() {
+//        return timerRunOut;
+//    }
 
     public void setAnswered(boolean answered) {
         this.answered = answered;

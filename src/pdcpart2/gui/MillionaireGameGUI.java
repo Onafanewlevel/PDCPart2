@@ -133,17 +133,18 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         messageLabel = new JLabel("Messages will appear here");
         messageLabel.setFont(customFont.deriveFont(14f));
 
-        // Question display using JTextArea with JScrollPane and custom font
+        // Question display using JTextArea with JScrollPane
         questionTextArea = new JTextArea();
         questionTextArea.setLineWrap(true);
         questionTextArea.setWrapStyleWord(true);
         questionTextArea.setEditable(false);
         questionTextArea.setFont(customFont.deriveFont(18f));
+        questionTextArea.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(questionTextArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Options buttons with custom font
+        // Options buttons
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new GridLayout(2, 2, 10, 10)); // Added spacing for better UI
         for (int i = 0; i < 4; i++) {
@@ -153,7 +154,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             optionsPanel.add(optionButtons[i]);
         }
 
-        // Lifeline buttons with custom font
+        // Lifeline buttons
         JPanel lifelinePanel = new JPanel();
         lifelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         fiftyFiftyButton = new JButton("50:50");
@@ -245,7 +246,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 // Open the StartScreenGUI
                 new StartScreenGUI();
             } else {
-                // Player chose not to play again; exit the application
+                // Player chose not to play again; exit the application 
                 System.exit(0);
             }
         });
