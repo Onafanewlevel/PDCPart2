@@ -4,10 +4,6 @@
  */
 package pdcpart2.util;
 
-/**
- *
- * @author setefanomuller
- */
 import pdcpart2.model.Question;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,18 +13,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * QuestionDatabaseLoader loads quiz questions from the Derby embedded database.
+ */
 public class QuestionDatabaseLoader {
     private List<Question> questions = new ArrayList<>();
 
     // Constructor to initialize and load questions from the database
-    public QuestionDatabaseLoader(String databaseUrl, String user, String password) {
-        loadQuestions(databaseUrl, user, password);
+    public QuestionDatabaseLoader(String databasePath) {
+        loadQuestions(databasePath);
     }
 
     // Load questions from the database
-    private void loadQuestions(String databaseUrl, String user, String password) {
+    private void loadQuestions(String databasePath) {
+        String jdbcURL = "jdbc:derby:" + databasePath + ";create=true";
         String query = "SELECT question, option_a, option_b, option_c, option_d, correct_answer, hint FROM Questions";
-        try (Connection connection = DriverManager.getConnection(databaseUrl, user, password);
+
+        // Load the Derby Embedded Driver
+        try {
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Derby Embedded Driver not found.");
+            e.printStackTrace();
+            return;
+        }
+
+        try (Connection connection = DriverManager.getConnection(jdbcURL);
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -44,6 +54,7 @@ public class QuestionDatabaseLoader {
                 questions.add(new Question(question, optionA, optionB, optionC, optionD, correctAnswer, hint));
             }
         } catch (SQLException e) {
+            System.err.println("Error connecting to or querying the database.");
             e.printStackTrace();
         }
     }
@@ -53,5 +64,6 @@ public class QuestionDatabaseLoader {
         return questions;
     }
 }
+
 
 
