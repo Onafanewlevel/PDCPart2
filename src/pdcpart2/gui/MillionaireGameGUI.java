@@ -399,7 +399,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private void handleQuitGame() {
         int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure you want to quit the game?",
+                "Are you sure you want to quit the game? Your progress will not be saved.",
                 "Confirm Quit",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE
@@ -407,7 +407,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
         if (confirm == JOptionPane.YES_OPTION) {
             dbInitializer.shutdownDatabase();
-            StopGame();
+            System.exit(0);
         }
     }
 
