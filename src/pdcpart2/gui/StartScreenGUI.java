@@ -1,4 +1,3 @@
-
 package pdcpart2.gui;
 
 import javax.swing.*;
@@ -19,8 +18,7 @@ import pdcpart2.util.FontLoader;
  *
  * Additionally, it displays a table of previous game results.
  *
- * Author: Setefano Muller 
- *         Tharuka Rodrigo
+ * Author: Setefano Muller Tharuka Rodrigo
  */
 public class StartScreenGUI extends JFrame {
 
@@ -28,6 +26,7 @@ public class StartScreenGUI extends JFrame {
     private JTextField nameField;
     private JLabel titleLabel;
     private JButton startButton;
+    private JButton quitButton;
     private Font customFont;
 
     // Components for displaying game results
@@ -113,18 +112,26 @@ public class StartScreenGUI extends JFrame {
 
         JLabel nameLabel = new JLabel("Enter your name: ");
         nameLabel.setFont(customFont.deriveFont(18f));
-        nameLabel.setForeground(new Color(0, 0, 128)); // Example color: Navy
+        nameLabel.setForeground(new Color(0, 0, 128));
 
         nameField = new JTextField(15);
         nameField.setFont(customFont.deriveFont(16f));
 
+        // Start Button
         startButton = new JButton("Start Game");
         startButton.setFont(customFont.deriveFont(16f));
         startButton.setBackground(new Color(60, 179, 113));
         startButton.setForeground(Color.BLACK);
         startButton.setFocusPainted(false);
 
-        // Add action listener for the start button
+        // Quit Button
+        quitButton = new JButton("Quit Game");
+        quitButton.setFont(customFont.deriveFont(16f));
+        startButton.setBackground(new Color(60, 179, 113));
+        startButton.setForeground(Color.BLACK);
+        startButton.setFocusPainted(false);
+
+        // Action listener for the start button
         startButton.addActionListener(e -> {
             String playerName = nameField.getText().trim();
             if (!playerName.isEmpty()) {
@@ -137,9 +144,27 @@ public class StartScreenGUI extends JFrame {
             }
         });
 
+        // Action listener for the quit button
+        quitButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to quit the game?",
+                    "Confirm Quit",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                dbInitializer.shutdownDatabase();
+                System.exit(0);
+            }
+
+        });
+
         inputPanel.add(nameLabel);
         inputPanel.add(nameField);
         inputPanel.add(startButton);
+        inputPanel.add(quitButton);
 
         return inputPanel;
     }
@@ -207,10 +232,10 @@ public class StartScreenGUI extends JFrame {
             List<GameResult> results = gameResultDAO.getAllGameResults();
             for (GameResult result : results) {
                 Object[] rowData = {
-                        result.getPlayerName(),
-                        "$" + result.getScore(),
-                        result.getLastQuestionIndex(),
-                        result.getTimestamp().toString()
+                    result.getPlayerName(),
+                    "$" + result.getScore(),
+                    result.getLastQuestionIndex(),
+                    result.getTimestamp().toString()
                 };
                 tableModel.addRow(rowData);
             }
