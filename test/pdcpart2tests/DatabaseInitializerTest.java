@@ -36,9 +36,7 @@ public class DatabaseInitializerTest {
     public void setUp() {
         try {
             // Initialize the DatabaseInitializer
-            dbInitializer = new DatabaseInitializer(TEST_DATABASE_PATH);
-            dbInitializer.initializeDatabase();
-            dbInitializer.populateDatabase();
+            dbInitializer = DatabaseInitializer.getInstance(TEST_DATABASE_PATH);
         } catch (Exception e) { // Replace with specific exceptions if DatabaseInitializer throws them
             fail("Setup failed: " + e.getMessage());
         }

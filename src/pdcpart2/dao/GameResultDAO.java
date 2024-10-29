@@ -5,7 +5,6 @@
 package pdcpart2.dao;
 
 import pdcpart2.model.GameResult;
-import pdcpart2.util.DatabaseInitializer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
+import pdcpart2.util.DatabaseInitializer;
 
 /**
  * Data Access Object for GameResult.
@@ -21,13 +21,22 @@ import java.util.ArrayList;
  */
 public class GameResultDAO {
 
-    private Connection connection;
+    private Connection connection; // For Testing purposes
+    
+    /**
+     * Default Constructor
+     */
+    public GameResultDAO(){
+        connection = DatabaseInitializer.getInstance("QuestionDB").getConnection();   
+    }
 
     /**
-     * Constructor initializes the database connection using DatabaseInitializer.
+     * Constructor initializes the database connection.
+     *
+     * @param connection The Connection object to the database.
      */
-    public GameResultDAO() {
-        connection = DatabaseInitializer.getInstance("QuestionDB").getConnection();
+    public GameResultDAO(Connection connection) {
+        this.connection = connection;
     }
 
     /**
@@ -99,5 +108,6 @@ public class GameResultDAO {
         return results;
     }
 }
+
 
 
