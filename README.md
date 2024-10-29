@@ -46,10 +46,30 @@ Welcome to "Who Wants to Be a Millionaire"! This is a Java-based trivia game ins
    git clone https://github.com/Onafanewlevel/PDCPart2.git
    ```
 
-## How to Start Game
-1. Open project via in your perfered Java IDE
-2. Navigate to src/pdcpart2/gui
-3. Run StartScreenGUI.java
+## How to start the Game
+1. **Go into project directory**
+    ```bash
+    cd PDCPart2
+    ```
+2. **Build .jar file**
+    ```bash
+    # ANT
+    ant clean jar
+
+    # MAVEN
+    maven clean package
+
+    # GRADLE
+    gradle clean build
+    ```
+3. **Run .jar file**
+
+    There is an issue if you run the command in the dist folder, i.e., **java -jar "PDCPart2.jar"** as the .jar file won't be able to read the custom font file.
+
+    Therefore, just run this command in the **project home directory**.
+    ```bash
+    java -jar "dist/PDCPart2.jar"
+    ```
 
 ## How to Play
 1. Enter your name and click the **Start Game** button
