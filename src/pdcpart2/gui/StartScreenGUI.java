@@ -19,7 +19,8 @@ import pdcpart2.util.FontLoader;
  *
  * Additionally, it displays a table of previous game results.
  *
- * Author: Setefano Muller Tharuka Rodrigo
+ * Author: Setefano Muller
+ *         Tharuka Rodrigo
  */
 public class StartScreenGUI extends JFrame implements GameControl {
 
