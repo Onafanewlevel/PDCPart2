@@ -5,6 +5,7 @@
 package pdcpart2.util;
 
 import pdcpart2.model.Question;
+import pdcpart2.model.GameResult;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,11 +17,10 @@ import java.util.ArrayList;
 
 /**
  * DatabaseInitializer is responsible for setting up the Apache Derby Embedded
- * database. It creates the Questions table if it doesn't exist and populates it
- * with initial data.
- * 
- * @Author: Setefano Muller
- *          Tharuka Rodrigo
+ * database. It creates the Questions and Game_Results tables if they don't
+ * exist and populates them with initial data.
+ *
+ * @Author: Setefano Muller Tharuka Rodrigo
  */
 public class DatabaseInitializer {
 
@@ -28,6 +28,7 @@ public class DatabaseInitializer {
     private String databasePath;
     private String jdbcURL;
     private static DatabaseInitializer instance;
+    private Connection connection; // Add this field
 
     /**
      * Constructor to initialize the DatabaseInitializer with the specified
@@ -35,11 +36,17 @@ public class DatabaseInitializer {
      *
      * @param databasePath The path to the Embedded Derby database.
      */
-    public DatabaseInitializer(String databasePath) {
+    private DatabaseInitializer(String databasePath) {
         this.databasePath = databasePath;
         this.jdbcURL = "jdbc:derby:" + this.databasePath + ";create=true";
     }
 
+    /**
+     * Singleton instance retrieval method.
+     *
+     * @param databasePath The path to the Embedded Derby database.
+     * @return The singleton instance of DatabaseInitializer.
+     */
     public static synchronized DatabaseInitializer getInstance(String databasePath) {
         if (instance == null) {
             instance = new DatabaseInitializer(databasePath);
@@ -50,7 +57,7 @@ public class DatabaseInitializer {
     }
 
     /**
-     * Initializes the database by creating the Questions table if it doesn't
+     * Initializes the database by creating the necessary tables if they don't
      * exist.
      */
     public void initializeDatabase() {
@@ -59,12 +66,15 @@ public class DatabaseInitializer {
             Class.forName(DERBY_EMBEDDED_DRIVER);
             System.out.println("Derby Embedded Driver loaded successfully.");
 
-            try (Connection conn = DriverManager.getConnection(jdbcURL); Statement stmt = conn.createStatement()) {
+            // Establish a connection and keep it open
+            connection = DriverManager.getConnection(jdbcURL);
+            System.out.println("Database connection established.");
 
-                // Check if the Questions table exists by attempting to query it
-                if (!doesTableExist(conn, "QUESTIONS")) {
-                    // Create the Questions table
-                    String createTableSQL = "CREATE TABLE Questions ("
+            try (Statement stmt = connection.createStatement()) {
+
+                // Create the Questions table if it doesn't exist
+                if (!doesTableExist("QUESTIONS")) {
+                    String createQuestionsTableSQL = "CREATE TABLE Questions ("
                             + "id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                             + "question VARCHAR(500) NOT NULL,"
                             + "option_a VARCHAR(255) NOT NULL,"
@@ -74,19 +84,37 @@ public class DatabaseInitializer {
                             + "correct_answer VARCHAR(255) NOT NULL,"
                             + "hint VARCHAR(500)"
                             + ")";
-                    stmt.executeUpdate(createTableSQL);
+                    stmt.executeUpdate(createQuestionsTableSQL);
                     System.out.println("Questions table created successfully.");
                 } else {
                     System.out.println("Questions table already exists.");
                 }
 
+                // Create the Game_Results table if it doesn't exist
+                if (!doesTableExist("GAME_RESULTS")) {
+                    String createGameResultsTableSQL = "CREATE TABLE Game_Results ("
+                            + "id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                            + "player_name VARCHAR(255) NOT NULL,"
+                            + "score INT NOT NULL,"
+                            + "last_question_index INT NOT NULL,"
+                            + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                            + ")";
+                    stmt.executeUpdate(createGameResultsTableSQL);
+                    System.out.println("Game_Results table created successfully.");
+                } else {
+                    System.out.println("Game_Results table already exists.");
+                }
+
             } catch (SQLException e) {
-                System.err.println("Error during database initialization.");
+                System.err.println("Error during table creation.");
                 e.printStackTrace();
             }
 
         } catch (ClassNotFoundException e) {
             System.err.println("Derby Embedded Driver not found.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error establishing database connection.");
             e.printStackTrace();
         }
     }
@@ -95,50 +123,44 @@ public class DatabaseInitializer {
      * Populates the Questions table with initial data if it's empty.
      */
     public void populateDatabase() {
-        try (Connection conn = DriverManager.getConnection(jdbcURL)) {
+        // Populate Questions table if empty
+        if (isTableEmpty("Questions")) {
+            List<Question> initialQuestions = getInitialQuestions();
+            String insertQuestionsSQL = "INSERT INTO Questions (question, option_a, option_b, option_c, option_d, correct_answer, hint) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            // Check if the Questions table is empty
-            if (isTableEmpty(conn, "Questions")) {
-                List<Question> initialQuestions = getInitialQuestions();
-                String insertSQL = "INSERT INTO Questions (question, option_a, option_b, option_c, option_d, correct_answer, hint) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-                try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-                    for (Question q : initialQuestions) {
-                        pstmt.setString(1, q.getQuestionText());
-                        pstmt.setString(2, q.getOptionA());
-                        pstmt.setString(3, q.getOptionB());
-                        pstmt.setString(4, q.getOptionC());
-                        pstmt.setString(5, q.getOptionD());
-                        pstmt.setString(6, q.getCorrectAnswer());
-                        pstmt.setString(7, q.getHint());
-                        pstmt.addBatch();
-                    }
-                    pstmt.executeBatch();
-                    System.out.println("Initial questions inserted successfully.");
-                } catch (SQLException e) {
-                    System.err.println("Error inserting initial questions.");
-                    e.printStackTrace();
+            try (PreparedStatement pstmt = connection.prepareStatement(insertQuestionsSQL)) {
+                for (Question q : initialQuestions) {
+                    pstmt.setString(1, q.getQuestionText());
+                    pstmt.setString(2, q.getOptionA());
+                    pstmt.setString(3, q.getOptionB());
+                    pstmt.setString(4, q.getOptionC());
+                    pstmt.setString(5, q.getOptionD());
+                    pstmt.setString(6, q.getCorrectAnswer());
+                    pstmt.setString(7, q.getHint());
+                    pstmt.addBatch();
                 }
-            } else {
-                System.out.println("Questions table is already populated.");
+                pstmt.executeBatch();
+                System.out.println("Initial questions inserted successfully.");
+            } catch (SQLException e) {
+                System.err.println("Error inserting initial questions.");
+                e.printStackTrace();
             }
-
-        } catch (SQLException e) {
-            System.err.println("Error connecting to the database during population.");
-            e.printStackTrace();
+        } else {
+            System.out.println("Questions table is already populated.");
         }
+
+        // No initial data needed for Game_Results table
     }
 
     /**
      * Checks if a specific table exists in the database.
      *
-     * @param conn The database connection.
      * @param tableName The name of the table to check.
      * @return true if the table exists, false otherwise.
      */
-    private boolean doesTableExist(Connection conn, String tableName) {
-        try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
+    private boolean doesTableExist(String tableName) {
+        try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName.toUpperCase(), null)) {
             return rs.next();
         } catch (SQLException e) {
             System.err.println("Error checking if table " + tableName + " exists.");
@@ -150,13 +172,12 @@ public class DatabaseInitializer {
     /**
      * Checks if a specific table is empty.
      *
-     * @param conn The database connection.
      * @param tableName The name of the table to check.
      * @return true if the table is empty, false otherwise.
      */
-    private boolean isTableEmpty(Connection conn, String tableName) {
+    private boolean isTableEmpty(String tableName) {
         String countSQL = "SELECT COUNT(*) FROM " + tableName;
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(countSQL)) {
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(countSQL)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count == 0;
@@ -181,7 +202,7 @@ public class DatabaseInitializer {
                 "A fixed value",
                 "A random value",
                 "A changeable value",
-                "A funtion",
+                "A function",
                 "A changeable value",
                 "It stores information that can be changed."
         ));
@@ -247,7 +268,7 @@ public class DatabaseInitializer {
         ));
 
         questions.add(new Question(
-                "What is the purpose of an 'if' statement??",
+                "What is the purpose of an 'if' statement?",
                 "To loop code",
                 "To declare variables",
                 "To make decisions",
@@ -267,7 +288,7 @@ public class DatabaseInitializer {
         ));
 
         questions.add(new Question(
-                "Which of these is used to style a webpage??",
+                "Which of these is used to style a webpage?",
                 "Python",
                 "HTML",
                 "JavaScript",
@@ -297,7 +318,7 @@ public class DatabaseInitializer {
         ));
 
         questions.add(new Question(
-                "What does 'SQL' stand for??",
+                "What does 'SQL' stand for?",
                 "Structured Quality Language",
                 "Sequential Query Logic",
                 "Structured Query Language",
@@ -330,10 +351,23 @@ public class DatabaseInitializer {
     }
 
     /**
+     * Returns the current database connection.
+     *
+     * @return The Connection object.
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
      * Shuts down the Derby Embedded database explicitly.
      */
     public synchronized void shutdownDatabase() {
         try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
             DriverManager.getConnection("jdbc:derby:;shutdown=true");
         } catch (SQLException e) {
             if ("XJ015".equals(e.getSQLState())) {
@@ -344,5 +378,4 @@ public class DatabaseInitializer {
             }
         }
     }
-
 }
