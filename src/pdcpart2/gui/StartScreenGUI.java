@@ -46,9 +46,11 @@ public class StartScreenGUI extends JFrame implements GameControl {
 
         // Frame setup
         setTitle("Who Wants to Become a Millionaire");
-        setSize(800, 600); // Adjusted size for better balance
+        setSize(1000, 600); // Adjusted size for better balance
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setResizable(true); // Allow frame to be resizable
+        setMinimumSize(new Dimension(800, 600)); // Set minimum size
 
         // Center the window on the screen
         setLocationRelativeTo(null);
@@ -170,7 +172,7 @@ public class StartScreenGUI extends JFrame implements GameControl {
         ));
 
         // Table columns
-        String[] columnNames = {"Player Name", "Score", "Last Question Index", "Date & Time"};
+        String[] columnNames = {"Player Name", "Score", "Last Question Answered", "Date & Time"};
 
         // Initialize table model
         tableModel = new DefaultTableModel(columnNames, 0) {

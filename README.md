@@ -1,6 +1,6 @@
 # Who Wants to Be a Millionaire | Comp603 Project Part 2
 
-Welcome to "Who Wants to Be a Millionaire"! This is a Java-based trivia game inspired by the popular TV show, allowing players to test their knowledge by answering questions to win increasing amounts of prize money.This project is for **COMP603 PDC Assignment Part 2**.
+Welcome to "Who Wants to Be a Millionaire"! This is a Java-based trivia game inspired by the popular TV show, allowing players to test their knowledge by answering questions to win increasing amounts of prize money. This project is for **COMP603 PDC Assignment Part 2**.
 
 ### Group 40 Members:
 - [Setefano Muller | 16924823](https://github.com/Onafanewlevel)

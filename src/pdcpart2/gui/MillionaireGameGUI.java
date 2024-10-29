@@ -1,4 +1,3 @@
-
 package pdcpart2.gui;
 
 import pdcpart2.dao.GameResultDAO;
@@ -28,7 +27,7 @@ import pdcpart2.model.GameResult;
  * Implements the GameControl and TimerListener interfaces to control game flow
  * and respond to timer expiration events.
  *
- * Author: Setefano Muller 
+ * Author: Setefano Muller
  *         Tharuka Rodrigo
  */
 public class MillionaireGameGUI extends JFrame implements GameControl, TimerListener {
@@ -82,7 +81,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
-        setSize(900, 700);
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(true); // Allow frame to be resizable
@@ -135,7 +134,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     }
 
     /**
-     * Creates the information panel containing player info, score, and countdown.
+     * Creates the information panel containing player info, score, and
+     * countdown.
      *
      * @return JPanel containing the info components.
      */
@@ -166,7 +166,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     }
 
     /**
-     * Creates the question panel containing the question text and answer options.
+     * Creates the question panel containing the question text and answer
+     * options.
      *
      * @return JPanel containing the question and options.
      */
@@ -222,7 +223,8 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     }
 
     /**
-     * Creates the lifeline panel containing lifeline buttons, additional buttons, and message feedback.
+     * Creates the lifeline panel containing lifeline buttons, additional
+     * buttons, and message feedback.
      *
      * @return JPanel containing lifelines, additional buttons, and messages.
      */
@@ -238,15 +240,11 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
         fiftyFiftyButton = new JButton("50:50");
         fiftyFiftyButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
-        fiftyFiftyButton.setFocusPainted(false);
-        fiftyFiftyButton.setBackground(new Color(255, 165, 0)); // Example color: Orange
         fiftyFiftyButton.setForeground(Color.BLACK);
         fiftyFiftyButton.setPreferredSize(new Dimension(100, 40));
 
         hintButton = new JButton("Hint");
         hintButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
-        hintButton.setFocusPainted(false);
-        hintButton.setBackground(new Color(60, 179, 113)); // Example color: Medium Sea Green
         hintButton.setForeground(Color.BLACK);
         hintButton.setPreferredSize(new Dimension(100, 40));
 
@@ -261,15 +259,11 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
         quitGameButton = new JButton("Quit Game");
         quitGameButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
-        quitGameButton.setFocusPainted(false);
-        quitGameButton.setBackground(new Color(220, 20, 60)); // Example color: Crimson
         quitGameButton.setForeground(Color.BLACK);
         quitGameButton.setPreferredSize(new Dimension(120, 40));
 
         resetGameButton = new JButton("Reset Game");
         resetGameButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
-        resetGameButton.setFocusPainted(false);
-        resetGameButton.setBackground(new Color(30, 144, 255)); // Example color: Dodger Blue
         resetGameButton.setForeground(Color.BLACK);
         resetGameButton.setPreferredSize(new Dimension(120, 40));
 
@@ -387,14 +381,14 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             } else {
                 // Player chose not to play again; exit the application 
                 dbInitializer.shutdownDatabase();
-                System.exit(0);               
+                System.exit(0);
             }
         });
     }
 
     /**
-     * Handles the Quit Game functionality.
-     * Prompts the user for confirmation. If confirmed, shuts down the database and stops the game.
+     * Handles the Quit Game functionality. Prompts the user for confirmation.
+     * If confirmed, shuts down the database and stops the game.
      */
     private void handleQuitGame() {
         int confirm = JOptionPane.showConfirmDialog(
@@ -412,8 +406,9 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     }
 
     /**
-     * Handles the Reset Game functionality.
-     * Prompts the user for confirmation. If confirmed, does not save the game result and returns to StartScreenGUI.
+     * Handles the Reset Game functionality. Prompts the user for confirmation.
+     * If confirmed, does not save the game result and returns to
+     * StartScreenGUI.
      */
     private void handleResetGame() {
         int confirm = JOptionPane.showConfirmDialog(
@@ -574,8 +569,3 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         messageLabel.setText(message);
     }
 }
-
-
-
-
-
