@@ -78,7 +78,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         gameResultDAO = new GameResultDAO();
 
         // Load custom font using FontLoader
-        customFont = FontLoader.loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
+        customFont = FontLoader.loadFont("src/pdcpart2/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");

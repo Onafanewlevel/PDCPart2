@@ -37,7 +37,7 @@ public class StartScreenGUI extends JFrame {
 
     public StartScreenGUI() {
         // Load custom font using FontLoader
-        customFont = FontLoader.loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
+        customFont = FontLoader.loadFont("src/pdcpart2/fonts/MesloLGS NF Regular.ttf", 24f); // Adjust size as needed
 
         // Initialize DAO
         gameResultDAO = new GameResultDAO();
