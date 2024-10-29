@@ -4,23 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/.gitignore</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/model/Question.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/lifelines/Lifeline.java</file>
+            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/util/FontLoader.java</file>
             <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/gui/MillionaireGameGUI.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/lifelines/FiftyFifty.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/README.md</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/interfaces/TimerListener.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/interfaces/TimeControl.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/Messages.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/interfaces/GameControl.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/model/Player.java</file>
             <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/gui/StartScreenGUI.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/util/CountdownTimer.java</file>
             <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/build.xml</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/lifelines/Hint.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/util/QuestionDatabaseLoader.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/model/PrizeLevel.java</file>
-            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/util/TimeUtil.java</file>
+            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/derby.log</file>
+            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/README.md</file>
+            <file>file:/Users/setefanomuller/Developer/PDCPart2/PDCPart2/src/pdcpart2/util/DatabaseInitializer.java</file>
         </group>
     </open-files>
 </project-private>
