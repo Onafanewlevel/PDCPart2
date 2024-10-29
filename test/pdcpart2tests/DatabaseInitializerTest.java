@@ -1,3 +1,4 @@
+
 package pdcpart2tests;
 
 import org.junit.Test;
@@ -22,7 +23,8 @@ import java.sql.Statement;
  * It also ensures proper resource management by initializing the database before tests
  * and cleaning up after tests by shutting down and deleting the test database.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class DatabaseInitializerTest {
 

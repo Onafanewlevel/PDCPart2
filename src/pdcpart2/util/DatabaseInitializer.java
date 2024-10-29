@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.util;
 
 import pdcpart2.model.Question;
@@ -20,7 +17,8 @@ import java.util.ArrayList;
  * database. It creates the Questions and Game_Results tables if they don't
  * exist and populates them with initial data.
  *
- * @Author: Setefano Muller Tharuka Rodrigo
+ * @Author: Setefano Muller
+ *          Tharuka Rodrigo
  */
 public class DatabaseInitializer {
 

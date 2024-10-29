@@ -1,3 +1,4 @@
+
 package pdcpart2.gui;
 
 import javax.swing.*;
@@ -18,7 +19,8 @@ import pdcpart2.util.FontLoader;
  *
  * Additionally, it displays a table of previous game results.
  *
- * Author: Setefano Muller
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class StartScreenGUI extends JFrame {
 

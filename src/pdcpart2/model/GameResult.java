@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.model;
 
 import java.sql.Timestamp;
@@ -9,7 +6,8 @@ import java.sql.Timestamp;
 /**
  * Represents a game result record.
  *
- * Author: Setefano Muller
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class GameResult {
     private int id;

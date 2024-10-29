@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.util;
 
 /**
@@ -10,7 +7,8 @@ package pdcpart2.util;
  * seconds and checks if the timer has run out. The timer stops if an answer is
  * provided before it reaches zero.
  *
- * Author: Setefano Muller Author: Tharuka Rodrigo
+ * Author: Setefano Muller
+ *         Tharuka Rodrigo
  */
 import pdcpart2.interfaces.TimerListener;
 import pdcpart2.interfaces.TimeControl;

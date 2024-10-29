@@ -1,3 +1,4 @@
+
 package pdcpart2tests;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,8 @@ import java.util.List;
 /**
  * Test class for GameResultDAO using JUnit 4.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class GameResultDAOTest {
 

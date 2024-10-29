@@ -5,8 +5,10 @@
 package pdcpart2.model;
 
 /**
- *
- * @author setefanomuller
+ * This is the PrizeLevel Amount
+ * 
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public enum PrizeLevel {
     LEVEL_0(0), // No prize

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2tests;
 
 import static org.junit.Assert.*;
@@ -23,7 +20,8 @@ import javax.swing.JLabel;
  * 2. Lifelines cannot be used more than once.
  * 3. Proper handling when no hint is available.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class LifelineTest {
 

@@ -5,8 +5,10 @@
 package pdcpart2.model;
 
 /**
- *
- * @author setefanomuller
+ * This is the Question Model
+ * 
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo       
  */
 public class Question {
     private String questionText;

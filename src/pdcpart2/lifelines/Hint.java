@@ -1,11 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.lifelines;
 
 /**
- *
+ * Hint Lifeline provides a clue to Player to assist them in selecting the correct answer.
+ * 
  * @author setefanomuller
  */
 import javax.swing.*;
@@ -26,8 +24,6 @@ public class Hint extends Lifeline {
             messageLabel.setText("You have already used the Hint lifeline.");
             return;
         }
-
-        System.out.println("Hint lifeline used."); // Debugging statement
 
         if (question.getHint() != null && !question.getHint().isEmpty()) {
             messageLabel.setText("Hint: " + question.getHint());

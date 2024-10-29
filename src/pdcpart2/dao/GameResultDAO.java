@@ -1,11 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.dao;
 
 import pdcpart2.model.GameResult;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,7 +13,8 @@ import pdcpart2.util.DatabaseInitializer;
 /**
  * Data Access Object for GameResult.
  *
- * Author: Setefano Muller
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class GameResultDAO {
 
@@ -31,7 +28,7 @@ public class GameResultDAO {
     }
 
     /**
-     * Constructor initializes the database connection.
+     * Constructor initializes the database connection for Testing purposes.
      *
      * @param connection The Connection object to the database.
      */

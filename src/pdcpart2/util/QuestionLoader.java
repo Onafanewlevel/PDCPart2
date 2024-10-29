@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.util;
 
 import pdcpart2.model.Question;
@@ -15,6 +12,9 @@ import java.util.List;
 
 /**
  * QuestionLoader loads quiz questions from the Derby embedded database.
+ * 
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class QuestionLoader {
     private List<Question> questions = new ArrayList<>();

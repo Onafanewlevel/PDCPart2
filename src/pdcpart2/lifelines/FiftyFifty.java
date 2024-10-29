@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.lifelines;
 
 import pdcpart2.model.Question;
@@ -12,6 +9,9 @@ import java.util.Random;
 /**
  * FiftyFifty lifeline removes two incorrect answers from the available options.
  * It ensures that the correct answer remains enabled.
+ * 
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class FiftyFifty extends Lifeline {
 

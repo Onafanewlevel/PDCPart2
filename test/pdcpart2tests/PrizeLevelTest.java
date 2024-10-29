@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2tests;
 
 import org.junit.Test;
@@ -16,7 +13,8 @@ import pdcpart2.model.PrizeLevel;
  * 1. Correct prize amounts are returned for valid question levels.
  * 2. Proper handling of invalid question levels.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class PrizeLevelTest {
 

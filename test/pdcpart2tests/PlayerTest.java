@@ -1,3 +1,4 @@
+
 package pdcpart2tests;
 
 import org.junit.Test;
@@ -12,7 +13,8 @@ import pdcpart2.model.Player;
  * 1. Proper initialization of Player objects.
  * 2. Correct updating of player scores.
  *
- * Author: [Your Name]
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class PlayerTest {
 

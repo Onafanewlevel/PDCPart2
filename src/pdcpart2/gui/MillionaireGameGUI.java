@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package pdcpart2.gui;
 
 import pdcpart2.dao.GameResultDAO;
@@ -31,7 +28,8 @@ import pdcpart2.model.GameResult;
  * Implements the GameControl and TimerListener interfaces to control game flow
  * and respond to timer expiration events.
  *
- * Author: Setefano Muller
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo
  */
 public class MillionaireGameGUI extends JFrame implements GameControl, TimerListener {
 
@@ -560,7 +558,6 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             );
 
             gameResultDAO.insertGameResult(gameResult);
-            System.out.println("Game result recorded: " + player.getName() + ", Score: " + player.getScore() + ", Last Question: " + lastQuestionIndex);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to record game result.",
