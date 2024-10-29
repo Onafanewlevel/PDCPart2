@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.List;
 
 import pdcpart2.dao.GameResultDAO;
+import pdcpart2.interfaces.GameControl;
 import pdcpart2.model.GameResult;
 import pdcpart2.model.Player;
 import pdcpart2.util.DatabaseInitializer;
@@ -20,7 +21,7 @@ import pdcpart2.util.FontLoader;
  *
  * Author: Setefano Muller Tharuka Rodrigo
  */
-public class StartScreenGUI extends JFrame {
+public class StartScreenGUI extends JFrame implements GameControl {
 
     private DatabaseInitializer dbInitializer;
     private JTextField nameField;
@@ -133,32 +134,12 @@ public class StartScreenGUI extends JFrame {
 
         // Action listener for the start button
         startButton.addActionListener(e -> {
-            String playerName = nameField.getText().trim();
-            if (!playerName.isEmpty()) {
-                Player player = new Player(playerName); // Create Player object
-                dispose(); // Close the start screen
-                new MillionaireGameGUI(player); // Start the main game with Player object
-            } else {
-                JOptionPane.showMessageDialog(StartScreenGUI.this, "Please enter your name to start the game.",
-                        "Input Required", JOptionPane.WARNING_MESSAGE);
-            }
+            StartGame();
         });
 
         // Action listener for the quit button
         quitButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "Are you sure you want to quit the game?",
-                    "Confirm Quit",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                dbInitializer.shutdownDatabase();
-                System.exit(0);
-            }
-
+            StopGame();
         });
 
         inputPanel.add(nameLabel);
@@ -246,8 +227,37 @@ public class StartScreenGUI extends JFrame {
         }
     }
 
+    @Override
+    public void StartGame() {
+        String playerName = nameField.getText().trim();
+        if (!playerName.isEmpty()) {
+            Player player = new Player(playerName); // Create Player object
+            dispose(); // Close the start screen
+            new MillionaireGameGUI(player); // Start the main game with Player object
+        } else {
+            JOptionPane.showMessageDialog(StartScreenGUI.this, "Please enter your name to start the game.",
+                    "Input Required", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    @Override
+    public void StopGame() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to quit the game?",
+                "Confirm Quit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbInitializer.shutdownDatabase();
+            System.exit(0);
+        }
+    }
+
     public static void main(String[] args) {
-        // Initialize the database (optional, as it will be initialized in DatabaseInitializer)
+        // Initlize and Start game
         new StartScreenGUI();
     }
 }
