@@ -43,5 +43,4 @@ Welcome to "Who Wants to Be a Millionaire"! This is a Java-based trivia game ins
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/WhoWantsToBeAMillionaire.git
-   cd WhoWantsToBeAMillionaire
+   git clone https://github.com/Onafanewlevel/WhoWantsToBeAMillionaire.git
