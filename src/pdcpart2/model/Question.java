@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdcpart2;
+package pdcpart2.model;
 
 /**
- *
- * @author setefanomuller
+ * This is the Question Model
+ * 
+ * Author: Setefano Muller 
+ *         Tharuka Rodrigo       
  */
 public class Question {
     private String questionText;
