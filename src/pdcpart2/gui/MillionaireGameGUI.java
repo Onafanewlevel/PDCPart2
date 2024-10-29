@@ -4,6 +4,7 @@
  */
 package pdcpart2.gui;
 
+import pdcpart2.dao.GameResultDAO;
 import pdcpart2.interfaces.TimerListener;
 import pdcpart2.interfaces.GameControl;
 import pdcpart2.lifelines.Hint;
@@ -21,6 +22,7 @@ import pdcpart2.model.Question;
 import pdcpart2.util.QuestionLoader;
 import pdcpart2.util.DatabaseInitializer;
 import pdcpart2.util.FontLoader;
+import pdcpart2.model.GameResult;
 
 /**
  * MillionaireGameGUI manages the main game interface, handling questions,
@@ -51,11 +53,18 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
     private JButton fiftyFiftyButton;
     private JButton hintButton;
 
+    // Additional Buttons
+    private JButton quitGameButton;
+    private JButton resetGameButton;
+
     // Database connection parameters for Embedded Mode
     private static final String DATABASE_PATH = "QuestionDB"; // Relative path to the database
 
     // Custom font reference
     private Font customFont;
+
+    // GameResultDAO instance
+    private GameResultDAO gameResultDAO;
 
     /**
      * Constructor to initialize the MillionaireGameGUI.
@@ -67,16 +76,19 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
         fiftyFiftyLifeline = new FiftyFifty();
         hintLifeline = new Hint();
 
+        // Initialize GameResultDAO
+        gameResultDAO = new GameResultDAO();
+
         // Load custom font using FontLoader
         customFont = FontLoader.loadFont("src/pdcpart2/styles/fonts/MesloLGS NF Regular.ttf", 18f); // Adjust path as needed
 
         // Frame setup
         setTitle("Who Wants to be a Millionaire");
-        setSize(900, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(true); // Allow frame to be resizable
-        setMinimumSize(new Dimension(800, 500)); // Set minimum size
+        setMinimumSize(new Dimension(800, 600)); // Set minimum size
 
         // Center the window on the screen
         setLocationRelativeTo(null);
@@ -111,68 +123,90 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
      * Initializes all GUI components and layouts.
      */
     private void initializeGUIComponents() {
-        // Score and player display with custom font
-        scoreLabel = new JLabel("Score: $" + player.getScore());
-        scoreLabel.setFont(customFont.deriveFont(16f));
-        playerLabel = new JLabel("Player: " + player.getName());
-        playerLabel.setFont(customFont.deriveFont(16f));
-
-        JPanel infoPanel = new JPanel(new GridLayout(1, 3));
-        infoPanel.add(scoreLabel);
-        infoPanel.add(playerLabel);
-
-        // Countdown label with custom font
-        countdownLabel = new JLabel("Time left: 15");
-        countdownLabel.setFont(customFont.deriveFont(16f));
-        infoPanel.add(countdownLabel);
+        // Top Panel: Player Info, Score, Countdown
+        JPanel infoPanel = createInfoPanel();
         add(infoPanel, BorderLayout.NORTH);
 
-        // Message label for feedback and lifeline info
-        messageLabel = new JLabel("Messages will appear here");
-        messageLabel.setFont(customFont.deriveFont(14f));
+        // Center Panel: Question and Options
+        JPanel questionPanel = createQuestionPanel();
+        add(questionPanel, BorderLayout.CENTER);
 
-        // Question display using JTextArea with JScrollPane
+        // Bottom Panel: Lifelines, Additional Buttons, and Messages
+        JPanel lifelinePanel = createLifelinePanel();
+        add(lifelinePanel, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Creates the information panel containing player info, score, and countdown.
+     *
+     * @return JPanel containing the info components.
+     */
+    private JPanel createInfoPanel() {
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
+        infoPanel.setBackground(new Color(0, 102, 204)); // Example color: Blue
+
+        // Player Label
+        playerLabel = new JLabel("Player: " + player.getName());
+        playerLabel.setFont(customFont.deriveFont(Font.BOLD, 16f));
+        playerLabel.setForeground(Color.WHITE);
+        infoPanel.add(playerLabel);
+
+        // Score Label
+        scoreLabel = new JLabel("Score: $" + player.getScore());
+        scoreLabel.setFont(customFont.deriveFont(Font.BOLD, 16f));
+        scoreLabel.setForeground(Color.WHITE);
+        infoPanel.add(scoreLabel);
+
+        // Countdown Label
+        countdownLabel = new JLabel("Time left: 15");
+        countdownLabel.setFont(customFont.deriveFont(Font.BOLD, 16f));
+        countdownLabel.setForeground(Color.WHITE);
+        infoPanel.add(countdownLabel);
+
+        return infoPanel;
+    }
+
+    /**
+     * Creates the question panel containing the question text and answer options.
+     *
+     * @return JPanel containing the question and options.
+     */
+    private JPanel createQuestionPanel() {
+        JPanel questionPanel = new JPanel();
+        questionPanel.setLayout(new BorderLayout());
+        questionPanel.setBackground(new Color(245, 245, 245)); // Example color: White Smoke
+
+        // Question Text Area
         questionTextArea = new JTextArea();
         questionTextArea.setLineWrap(true);
         questionTextArea.setWrapStyleWord(true);
         questionTextArea.setEditable(false);
         questionTextArea.setFont(customFont.deriveFont(18f));
         questionTextArea.setFocusable(false);
+        questionTextArea.setBackground(new Color(245, 245, 245));
+        questionTextArea.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         JScrollPane scrollPane = new JScrollPane(questionTextArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        add(scrollPane, BorderLayout.CENTER);
+        questionPanel.add(scrollPane, BorderLayout.NORTH);
 
-        // Options buttons
+        // Options Panel
         JPanel optionsPanel = new JPanel();
-        optionsPanel.setLayout(new GridLayout(2, 2, 10, 10)); // Added spacing for better UI
+        optionsPanel.setLayout(new GridLayout(2, 2, 20, 20)); // 2x2 grid with spacing
+        optionsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         for (int i = 0; i < 4; i++) {
             optionButtons[i] = new JButton();
-            optionButtons[i].setFont(customFont.deriveFont(16f));
-            optionButtons[i].setMargin(new Insets(10, 10, 10, 10)); // Optional: Adjust padding
+            optionButtons[i].setFont(customFont.deriveFont(Font.PLAIN, 16f));
+            optionButtons[i].setFocusPainted(false);
+            optionButtons[i].setBackground(new Color(173, 216, 230)); // Example color: Light Blue
+            optionButtons[i].setForeground(Color.BLACK);
+            optionButtons[i].setMargin(new Insets(10, 10, 10, 10));
             optionsPanel.add(optionButtons[i]);
         }
 
-        // Lifeline buttons
-        JPanel lifelinePanel = new JPanel();
-        lifelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        fiftyFiftyButton = new JButton("50:50");
-        fiftyFiftyButton.setFont(customFont.deriveFont(14f));
-        hintButton = new JButton("Hint");
-        hintButton.setFont(customFont.deriveFont(14f));
-
-        lifelinePanel.add(fiftyFiftyButton);
-        lifelinePanel.add(hintButton);
-
-        // South Panel to hold both options and lifelines
-        JPanel southPanel = new JPanel();
-        southPanel.setLayout(new BorderLayout());
-        southPanel.add(optionsPanel, BorderLayout.CENTER);
-        southPanel.add(lifelinePanel, BorderLayout.EAST);
-        southPanel.add(messageLabel, BorderLayout.SOUTH); // Place messageLabel below lifelines
-
-        add(southPanel, BorderLayout.SOUTH);
-
-        // Event listeners for answer buttons
+        // Add action listeners for answer buttons
         for (JButton button : optionButtons) {
             button.addActionListener(new ActionListener() {
                 @Override
@@ -184,6 +218,86 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
             });
         }
 
+        questionPanel.add(optionsPanel, BorderLayout.CENTER);
+
+        return questionPanel;
+    }
+
+    /**
+     * Creates the lifeline panel containing lifeline buttons, additional buttons, and message feedback.
+     *
+     * @return JPanel containing lifelines, additional buttons, and messages.
+     */
+    private JPanel createLifelinePanel() {
+        JPanel lifelinePanel = new JPanel();
+        lifelinePanel.setLayout(new BorderLayout());
+        lifelinePanel.setBackground(new Color(0, 102, 204)); // Example color: Blue
+
+        // Lifelines Buttons Panel
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        buttonsPanel.setBackground(new Color(0, 102, 204));
+
+        fiftyFiftyButton = new JButton("50:50");
+        fiftyFiftyButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
+        fiftyFiftyButton.setFocusPainted(false);
+        fiftyFiftyButton.setBackground(new Color(255, 165, 0)); // Example color: Orange
+        fiftyFiftyButton.setForeground(Color.BLACK);
+        fiftyFiftyButton.setPreferredSize(new Dimension(100, 40));
+
+        hintButton = new JButton("Hint");
+        hintButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
+        hintButton.setFocusPainted(false);
+        hintButton.setBackground(new Color(60, 179, 113)); // Example color: Medium Sea Green
+        hintButton.setForeground(Color.BLACK);
+        hintButton.setPreferredSize(new Dimension(100, 40));
+
+        // Add lifeline buttons to the panel
+        buttonsPanel.add(fiftyFiftyButton);
+        buttonsPanel.add(hintButton);
+
+        // Additional Buttons Panel
+        JPanel additionalButtonsPanel = new JPanel();
+        additionalButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        additionalButtonsPanel.setBackground(new Color(0, 102, 204));
+
+        quitGameButton = new JButton("Quit Game");
+        quitGameButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
+        quitGameButton.setFocusPainted(false);
+        quitGameButton.setBackground(new Color(220, 20, 60)); // Example color: Crimson
+        quitGameButton.setForeground(Color.BLACK);
+        quitGameButton.setPreferredSize(new Dimension(120, 40));
+
+        resetGameButton = new JButton("Reset Game");
+        resetGameButton.setFont(customFont.deriveFont(Font.BOLD, 14f));
+        resetGameButton.setFocusPainted(false);
+        resetGameButton.setBackground(new Color(30, 144, 255)); // Example color: Dodger Blue
+        resetGameButton.setForeground(Color.BLACK);
+        resetGameButton.setPreferredSize(new Dimension(120, 40));
+
+        // Add additional buttons to the panel
+        additionalButtonsPanel.add(quitGameButton);
+        additionalButtonsPanel.add(resetGameButton);
+
+        // Combine Lifeline and Additional Buttons Panels
+        JPanel combinedButtonsPanel = new JPanel();
+        combinedButtonsPanel.setLayout(new GridLayout(1, 2, 50, 10)); // Two columns: lifelines and additional buttons
+        combinedButtonsPanel.setBackground(new Color(0, 102, 204));
+
+        combinedButtonsPanel.add(buttonsPanel);
+        combinedButtonsPanel.add(additionalButtonsPanel);
+
+        lifelinePanel.add(combinedButtonsPanel, BorderLayout.NORTH);
+
+        // Message Label
+        messageLabel = new JLabel("Select your answer or use a lifeline.");
+        messageLabel.setFont(customFont.deriveFont(Font.ITALIC, 14f));
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        lifelinePanel.add(messageLabel, BorderLayout.SOUTH);
+
         // Add action listeners for lifeline buttons
         fiftyFiftyButton.addActionListener(new ActionListener() {
             @Override
@@ -192,7 +306,7 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                     fiftyFiftyLifeline.useLifeline(questions.get(currentQuestionIndex), optionButtons, messageLabel);
                     fiftyFiftyButton.setEnabled(false);
                 } else {
-                    messageLabel.setText("You have already used the 50:50 lifeline.");
+                    showMessage("You have already used the 50:50 lifeline.");
                 }
             }
         });
@@ -204,10 +318,36 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                     hintLifeline.useLifeline(questions.get(currentQuestionIndex), optionButtons, messageLabel);
                     hintButton.setEnabled(false);
                 } else {
-                    messageLabel.setText("You have already used the Hint lifeline.");
+                    showMessage("You have already used the Hint lifeline.");
                 }
             }
         });
+
+        // Add action listeners for additional buttons
+        quitGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleQuitGame();
+            }
+        });
+
+        resetGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleResetGame();
+            }
+        });
+
+        return lifelinePanel;
+    }
+
+    /**
+     * Shows a message in the message label.
+     *
+     * @param message The message to display.
+     */
+    private void showMessage(String message) {
+        messageLabel.setText(message);
     }
 
     @Override
@@ -217,6 +357,9 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
 
     @Override
     public void StopGame() {
+        // Before showing the dialog, record the game result
+        recordGameResult();
+
         // Ensure that this is executed on the EDT
         SwingUtilities.invokeLater(() -> {
             // Create a message based on whether the player won or lost
@@ -245,9 +388,52 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 new StartScreenGUI();
             } else {
                 // Player chose not to play again; exit the application 
+                dbInitializer.shutdownDatabase();
                 System.exit(0);               
             }
         });
+    }
+
+    /**
+     * Handles the Quit Game functionality.
+     * Prompts the user for confirmation. If confirmed, shuts down the database and stops the game.
+     */
+    private void handleQuitGame() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to quit the game?",
+                "Confirm Quit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbInitializer.shutdownDatabase();
+            StopGame();
+        }
+    }
+
+    /**
+     * Handles the Reset Game functionality.
+     * Prompts the user for confirmation. If confirmed, does not save the game result and returns to StartScreenGUI.
+     */
+    private void handleResetGame() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to reset the game? Your current progress will not be saved.",
+                "Confirm Reset",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Dispose of the current game window without saving the result
+            countdownTimer.StopTimer();
+            this.dispose();
+
+            // Open the StartScreenGUI
+            new StartScreenGUI();
+        }
     }
 
     /**
@@ -355,5 +541,44 @@ public class MillionaireGameGUI extends JFrame implements GameControl, TimerList
                 + "</div>"
                 + "</html>";
     }
+
+    /**
+     * Records the game result to the database.
+     */
+    private void recordGameResult() {
+        try {
+            int lastQuestionIndex = currentQuestionIndex;
+            // If the game was completed successfully, adjust the index
+            if (currentQuestionIndex >= questions.size()) {
+                lastQuestionIndex = questions.size();
+            }
+
+            GameResult gameResult = new GameResult(
+                    player.getName(),
+                    player.getScore(),
+                    lastQuestionIndex
+            );
+
+            gameResultDAO.insertGameResult(gameResult);
+            System.out.println("Game result recorded: " + player.getName() + ", Score: " + player.getScore() + ", Last Question: " + lastQuestionIndex);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to record game result.",
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Displays a message to the user in the message label.
+     *
+     * @param message The message to display.
+     */
+    private void displayMessage(String message) {
+        messageLabel.setText(message);
+    }
 }
+
+
+
+
 
