@@ -2,7 +2,8 @@ package pdcpart2tests;
 
 import org.junit.Test;
 import org.junit.Before;
-import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
 import pdcpart2.util.DatabaseInitializer;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Enhanced Test suite for the DatabaseInitializer class.
@@ -27,13 +29,14 @@ public class DatabaseInitializerTest {
     private static final String TEST_DATABASE_PATH = "TestQuestionsDB";
     private static final String JDBC_URL = "jdbc:derby:" + TEST_DATABASE_PATH + ";create=true";
 
-    private DatabaseInitializer dbInitializer;
+    private static DatabaseInitializer dbInitializer;
 
     /**
-     * Setup method to initialize and populate the database before each test.
+     * Setup method to initialize and populate the database once before all tests.
+     * This method must be static as per JUnit 4 requirements.
      */
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUpClass() {
         try {
             // Initialize the DatabaseInitializer
             dbInitializer = DatabaseInitializer.getInstance(TEST_DATABASE_PATH);
@@ -43,10 +46,11 @@ public class DatabaseInitializerTest {
     }
 
     /**
-     * Teardown method to shut down the database and delete the test database directory after each test.
+     * Teardown method to shut down the database and delete the test database directory after all tests.
+     * This method must be static as per JUnit 4 requirements.
      */
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
         if (dbInitializer != null) {
             dbInitializer.shutdownDatabase();
         }
@@ -58,7 +62,7 @@ public class DatabaseInitializerTest {
     /**
      * Helper method to delete the test database directory recursively.
      */
-    private void deleteTestDatabase() {
+    private static void deleteTestDatabase() {
         File dbDir = new File(TEST_DATABASE_PATH);
         if (dbDir.exists()) {
             deleteDirectoryRecursively(dbDir);
@@ -70,7 +74,7 @@ public class DatabaseInitializerTest {
      *
      * @param file The directory or file to delete.
      */
-    private void deleteDirectoryRecursively(File file) {
+    private static void deleteDirectoryRecursively(File file) {
         if (file.isDirectory()) {
             File[] children = file.listFiles();
             if (children != null) { // Prevent NullPointerException
